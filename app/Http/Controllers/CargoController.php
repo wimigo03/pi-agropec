@@ -98,7 +98,7 @@ class CargoController extends Controller
         $cargo = Cargo::find($id);
         $empresa = Empresa::find($cargo->empresa_id);
         $tipos = Cargo::TIPOS;
-        $cuentas_contables = PlanCuenta::where('empresa_id',$cargo->empresa_id)->pluck('nombre','id');
+        $cuentas_contables = PlanCuenta::where('empresa_id',$cargo->empresa_id)->where('detalle','1')->pluck('nombre','id');
         return view('cargos.create', compact('icono','header','cargo','empresa','tipos','cuentas_contables'));
     }
 
@@ -113,7 +113,7 @@ class CargoController extends Controller
             $parent = Cargo::select('codigo','nivel')->find($request->parent_id);
             $nivel = $parent->nivel + 1;
             $codigo = $parent->codigo . '.' . (Cargo::where('estado','1')->where('parent_id',$request->parent_id)->get()->count() + 1);
-            
+
             $cargo = Cargo::create([
                 'empresa_id' => $request->empresa_id,
                 'cliente_id' => $request->cliente_id,

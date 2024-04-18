@@ -9,8 +9,4 @@ Route::prefix('caja-venta')->name('caja.venta.')->middleware(['auth:sanctum',con
     Route::get('/show/{caja_venta_id}', 'CajaVentaController@show')->name('show')->middleware('can:caja.venta.show');
     Route::get('/aprobar/{caja_venta_id}', 'CajaVentaController@aprobar')->name('aprobar')->middleware('can:caja.venta.aprobar');
     Route::get('/rechazar/{caja_venta_id}', 'CajaVentaController@rechazar')->name('rechazar')->middleware('can:caja.venta.aprobar');
-    /*Route::get('/editar/{asiento_automatico_id}', 'AsientoAutomaticoController@editar')->name('editar')->middleware('can:asiento.automatico.editar');
-    Route::post('/update', 'AsientoAutomaticoController@update')->name('update')->middleware('can:asiento.automatico.editar');
-    Route::get('/habilitar/{asiento_automatico_id}', 'AsientoAutomaticoController@habilitar')->name('habilitar')->middleware('can:asiento.automatico.habilitar');
-    Route::get('/deshabilitar/{asiento_automatico_id}', 'AsientoAutomaticoController@deshabilitar')->name('deshabilitar')->middleware('can:asiento.automatico.habilitar');*/
 });
