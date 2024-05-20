@@ -75,10 +75,10 @@
     </div>
     <div class="form-group row">
         <div class="col-md-3 px-0 pr-1 font-roboto-12">
-            <label for="sucursal" class="d-inline">Centro Contable</label>
-            <select id="sucursal_id" class="form-control select2">
+            <label for="centro_contable" class="d-inline">Centro Contable</label>
+            <select id="centro_contable_id" class="form-control select2">
                 <option value="">-</option>
-                @foreach ($sucursales as $index => $value)
+                @foreach ($centros_contables as $index => $value)
                     <option value="{{ $index }}">{{ $value }}</option>
                 @endforeach
             </select>
@@ -149,7 +149,7 @@
                     <tr class="font-roboto-12 bg-warning text-white">
                         <td class="text-center p-1"><b>N°</b></td>
                         <td class="text-center p-1"><b>CUENTA</b></td>
-                        <td class="text-center p-1"><b>PROYECTO</b></td>
+                        <td class="text-center p-1"><b>CENTRO</b></td>
                         <td class="text-center p-1"><b>AUXILIAR</b></td>
                         <td class="text-center p-1"><b>GLOSA</b></td>
                         <td class="text-center p-1"><b>DEBE</b></td>
@@ -158,7 +158,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                 </tbody>
                 <tfoot id="tfoot">
                     <tr class="font-roboto-11">

@@ -311,8 +311,8 @@
         function cargar_comprobante_detalle(){
             var table = document.getElementById("tabla_comprobante_detalle");
             var rowCount = table.rows.length - 1;
-            var sucursal_id = $("#sucursal_id >option:selected").val();
-            var sucursal = $("#sucursal_id >option:selected").text();
+            var centro_contable_id = $("#centro_contable_id >option:selected").val();
+            var centro_contable = $("#centro_contable_id >option:selected").text();
             var plan_cuenta_id = $("#plan_cuenta_id >option:selected").val();
             var plan_cuenta = $("#plan_cuenta_id >option:selected").text();
             var auxiliar_id = $("#auxiliar_id >option:selected").val();
@@ -325,8 +325,8 @@
                                     rowCount +
                             "</td>"+
                             "<td class='text-left p-1'>"+
-                                "<input type='hidden' name='sucursal_id[]' value='" + sucursal_id + "'>" +
-                                    sucursal +
+                                "<input type='hidden' name='centro_contable_id[]' value='" + centro_contable_id + "'>" +
+                                    centro_contable +
                             "</td>"+
                             "<td class='text-left p-1'>"+
                                 "<input type='hidden' name='plan_cuenta_id[]' value='" + plan_cuenta_id + "'>" +
@@ -357,7 +357,7 @@
 
             $("#tabla_comprobante_detalle").append(fila);
             document.getElementById("tfoot").style.display = "table-footer-group";
-            $('#sucursal_id').val('').trigger('change');
+            $('#centro_contable_id').val('').trigger('change');
             $('#plan_cuenta_id').val('').trigger('change');
             $('#auxiliar_id').val('').trigger('change');
             document.getElementById('debe').value = '';
@@ -377,8 +377,8 @@
         }
 
         function validar_detalle(){
-            if($("#sucursal_id >option:selected").val() == ""){
-                alert("El campo de seleccion <b>[SUCURSAL]</b> es un dato obligatorio...");
+            if($("#centro_contable_id >option:selected").val() == ""){
+                alert("El campo de seleccion <b>[CENTRO CONTABLE]</b> es un dato obligatorio...");
                 return false;
             }
 

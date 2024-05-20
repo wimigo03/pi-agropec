@@ -13,6 +13,7 @@ use App\Models\TipoCambio;
 use App\Models\Moneda;
 use App\Models\User;
 use App\Models\Sucursal;
+use App\Models\CentroContable;
 use App\Models\PlanCuenta;
 use App\Models\PlanCuentaAuxiliar;
 use Auth;
@@ -89,14 +90,14 @@ class ComprobanteController extends Controller
         }
         $monedas = Moneda::where('estado','1')->orderBy('id','desc')->pluck('nombre','id');
         $tipos = Comprobante::TIPOS;
-        $sucursales = Sucursal::where('empresa_id',$empresa_id)->pluck('nombre','id');
+        $centros_contables = CentroContable::where('empresa_id',$empresa_id)->pluck('nombre','id');
         $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
                                         ->where('detalle','1')
                                         ->where('estado','1')
                                         ->where('empresa_id',$empresa_id)
                                         ->pluck('cuenta_contable','id');
         $plan_cuentas_auxiliares = PlanCuentaAuxiliar::where('estado','1')->pluck('nombre','id');
-        return view('comprobantes.create', compact('icono','header','empresa','tipo_cambio','monedas','tipos','sucursales','plan_cuentas','plan_cuentas_auxiliares'));
+        return view('comprobantes.create', compact('icono','header','empresa','tipo_cambio','monedas','tipos','centros_contables','plan_cuentas','plan_cuentas_auxiliares'));
     }
 
     public function store(Request $request)
@@ -140,7 +141,7 @@ class ComprobanteController extends Controller
                 $comprobante = Comprobante::create($datos);
 
                 $cont = 0;
-                while($cont < count($request->sucursal_id)){
+                while($cont < count($request->centro_contable_id)){
                     $datos_detalle = [
                         'comprobante_id' => $comprobante->id,
                         'empresa_id' => $empresa->id,
@@ -151,7 +152,7 @@ class ComprobanteController extends Controller
                         'moneda_id' => $moneda->id,
                         'pais_id' => $moneda->pais_id,
                         'plan_cuenta_id' => $request->plan_cuenta_id[$cont],
-                        'sucursal_id' => $request->sucursal_id[$cont],
+                        'centro_contable_id' => $request->centro_contable_id[$cont],
                         'plan_cuenta_auxiliar_id' => $request->auxiliar_id[$cont],
                         'glosa' => $request->glosa[$cont],
                         'debe' => floatval(str_replace(",", "", $request->debe[$cont])),
@@ -333,14 +334,14 @@ class ComprobanteController extends Controller
         $total_debe = $comprobante_detalles->sum('debe');
         $total_haber = $comprobante_detalles->sum('haber');
         $empresa = Empresa::find($comprobante->empresa_id);
-        $sucursales = Sucursal::where('empresa_id',$comprobante->empresa_id)->pluck('nombre','id');
+        $centros_contables = CentroContable::where('empresa_id',$comprobante->empresa_id)->pluck('nombre','id');
         $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
                                         ->where('detalle','1')
                                         ->where('estado','1')
                                         ->where('empresa_id',$comprobante->empresa_id)
                                         ->pluck('cuenta_contable','id');
         $plan_cuentas_auxiliares = PlanCuentaAuxiliar::where('estado','1')->pluck('nombre','id');
-        return view('comprobantes.editar', compact('icono','header','comprobante','comprobante_detalles','total_debe','total_haber','empresa','sucursales','plan_cuentas','plan_cuentas_auxiliares'));
+        return view('comprobantes.editar', compact('icono','header','comprobante','comprobante_detalles','total_debe','total_haber','empresa','centros_contables','plan_cuentas','plan_cuentas_auxiliares'));
     }
 
     public function eliminarRegistro($id)
@@ -359,7 +360,7 @@ class ComprobanteController extends Controller
     }
 
     public function update(Request $request)
-    {
+    {//dd($request->all());
         try{
             $cont = 0;
             $comprobante = Comprobante::find($request->comprobante_id);
@@ -370,28 +371,30 @@ class ComprobanteController extends Controller
                 return redirect()->back()->with('info_message', 'No existe un tipo de cambio para la [FECHA] seleccionada...')->withInput();
             }
             $moneda = Moneda::where('id',$comprobante->moneda_id)->first();
-            while($cont < count($request->sucursal_id)){
-                $datos_detalle = [
-                    'comprobante_id' => $comprobante->id,
-                    'empresa_id' => $empresa->id,
-                    'cliente_id' => $empresa->cliente_id,
-                    'tipo_cambio_id' => $tipo_cambio->id,
-                    'user_id' => $user != null ? $user->id : 1,
-                    'cargo_id' => $user != null ? $user->cargo_id : null,
-                    'moneda_id' => $moneda->id,
-                    'pais_id' => $moneda->pais_id,
-                    'plan_cuenta_id' => $request->plan_cuenta_id[$cont],
-                    'sucursal_id' => $request->sucursal_id[$cont],
-                    'plan_cuenta_auxiliar_id' => $request->auxiliar_id[$cont],
-                    'glosa' => $request->glosa[$cont],
-                    'debe' => floatval(str_replace(",", "", $request->debe[$cont])),
-                    'haber' => floatval(str_replace(",", "", $request->haber[$cont])),
-                    'estado' => '1'
-                ];
+            if(isset($request->centro_contable_id)){
+                while($cont < count($request->centro_contable_id)){
+                    $datos_detalle = [
+                        'comprobante_id' => $comprobante->id,
+                        'empresa_id' => $empresa->id,
+                        'cliente_id' => $empresa->cliente_id,
+                        'tipo_cambio_id' => $tipo_cambio->id,
+                        'user_id' => $user != null ? $user->id : 1,
+                        'cargo_id' => $user != null ? $user->cargo_id : null,
+                        'moneda_id' => $moneda->id,
+                        'pais_id' => $moneda->pais_id,
+                        'plan_cuenta_id' => $request->plan_cuenta_id[$cont],
+                        'centro_contable_id' => $request->centro_contable_id[$cont],
+                        'plan_cuenta_auxiliar_id' => $request->auxiliar_id[$cont],
+                        'glosa' => $request->glosa[$cont],
+                        'debe' => floatval(str_replace(",", "", $request->debe[$cont])),
+                        'haber' => floatval(str_replace(",", "", $request->haber[$cont])),
+                        'estado' => '1'
+                    ];
 
-                $comprobante_detalle = ComprobanteDetalle::create($datos_detalle);
+                    $comprobante_detalle = ComprobanteDetalle::create($datos_detalle);
 
-                $cont++;
+                    $cont++;
+                }
             }
 
             $monto_total = ComprobanteDetalle::select('debe')->where('comprobante_id',$comprobante->id)->where('estado','1')->get()->sum('debe');

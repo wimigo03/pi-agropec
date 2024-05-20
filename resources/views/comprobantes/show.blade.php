@@ -108,7 +108,7 @@
                         <td class="text-left p-1"><b>N°</b></td>
                         <td class="text-left p-1"><b>CUENTA</b></td>
                         <td class="text-left p-1"><b>AUXILIAR</b></td>
-                        <td class="text-left p-1"><b>PROYECTO</b></td>
+                        <td class="text-left p-1"><b>CENTRO</b></td>
                         <td class="text-left p-1"><b>GLOSA</b></td>
                         <td class="text-right p-1"><b>DEBE</b></td>
                         <td class="text-right p-1"><b>HABER</b></td>
@@ -123,7 +123,7 @@
                             <td class="text-left p-1">{{ $cont++ }}</td>
                             <td class="text-left p-1">{{ $datos->plan_cuenta->nombre }}</td>
                             <td class="text-left p-1">{{ $datos->plan_cuenta_auxiliar != null ? $datos->plan_cuenta_auxiliar->nombre : '-' }}</td>
-                            <td class="text-left p-1">{{ $datos->sucursal->nombre }}</td>
+                            <td class="text-left p-1">{{ $datos->centro->nombre }}</td>
                             <td class="text-left p-1">{{ $datos->glosa }}</td>
                             <td class="text-right p-1">{{ number_format($datos->debe,2,'.',',') }}</td>
                             <td class="text-right p-1">{{ number_format($datos->haber,2,'.',',') }}</td>

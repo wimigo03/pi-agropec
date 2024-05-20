@@ -32,7 +32,7 @@
         <td align="center"><b>FECHA</b></td>
         <td align="center"><b>COMPROBANTE</b></td>
         <td align="center"><b>CUENTA CONTABLE</b></td>
-        <td align="center"><b>PROYECTO</b></td>
+        <td align="center"><b>CENTRO</b></td>
         <td align="center"><b>CHEQUE</b></td>
         <td align="center"><b>GLOSA</b></td>
         <td align="center"><b>DEBE</b></td>
@@ -51,7 +51,7 @@
                 {{ $datos->codigo . ' ' . $datos->plan_cuenta }}
             </td>
             <td align="center">
-                {{ $datos->proyecto }}
+                {{ $datos->centro }}
             </td>
             <td align="center">
                 {{ $datos->nro_cheque }}

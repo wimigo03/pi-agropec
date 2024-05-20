@@ -79,7 +79,7 @@
                 <tr class="font-roboto-12">
                     <td class="text-center p-1"><b>FECHA</b></td>
                     <td class="text-center p-1"><b>COMPROBANTE</b></td>
-                    <td class="text-center p-1"><b>PROYECTO</b></td>
+                    <td class="text-center p-1"><b>CENTRO</b></td>
                     <td class="text-center p-1"><b>AUXILIAR</b></td>
                     <td class="text-center p-1"><b>CHEQUE</b></td>
                     <td class="text-center p-1"><b>GLOSA</b></td>
@@ -98,7 +98,7 @@
                             {{ $datos->nro_comprobante }} <b>{{ $datos->estado_abreviado}}</b>
                         </td>
                         <td class="text-center p-1">
-                            {{ $datos->proyecto }}
+                            {{ $datos->centro }}
                         </td>
                         <td class="text-center p-1">
                             {{ $datos->auxiliar }}

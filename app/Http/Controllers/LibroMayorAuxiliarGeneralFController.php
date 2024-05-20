@@ -65,7 +65,7 @@ class LibroMayorAuxiliarGeneralFController extends Controller
         $comprobantes = DB::table('comprobantef_detalles as a')
                                 ->join('comprobantesf as b','b.id','a.comprobantef_id')
                                 ->join('plan_cuentas as c','c.id','a.plan_cuenta_id')
-                                ->join('sucursales as e','e.id','a.sucursal_id')
+                                ->join('centros_contables as e','e.id','a.centro_contable_id')
                                 ->whereBetween('b.fecha',[$fecha_i,$fecha_f])
                                 ->where('a.plan_cuenta_auxiliar_id',$plan_cuenta_auxiliar_id)
                                 ->where('b.empresa_id',$empresa_id)
@@ -86,7 +86,7 @@ class LibroMayorAuxiliarGeneralFController extends Controller
                                         END AS estado_abreviado"),
                                         'c.codigo',
                                         'c.nombre as plan_cuenta',
-                                        'e.nombre as proyecto',
+                                        'e.nombre as centro',
                                         'a.nro_cheque',
                                         'a.glosa',
                                         'a.debe',

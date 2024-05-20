@@ -55,7 +55,7 @@
                     <th>FECHA</th>
                     <th>COMPROBANTE</th>
                     <th>CUENTA CONTABLE</th>
-                    <th>PROYECTO</th>
+                    <th>CENTRO</th>
                     <th>CHEQUE</th>
                     <th>GLOSA</th>
                     <th>DEBE</th>
@@ -68,7 +68,7 @@
                     <td class="align-center">{{ $datos->fecha }}</td>
                     <td class="align-center">{{ $datos->nro_comprobante }}&nbsp;<b>{{ $datos->estado_abreviado }}</b></td>
                     <td class="align-center">{{ $datos->codigo . ' ' . $datos->plan_cuenta }}</td>
-                    <td class="align-center">{{ $datos->proyecto }}</td>
+                    <td class="align-center">{{ $datos->centro }}</td>
                     <td>{{ $datos->nro_cheque }}</td>
                     <td>{{ $datos->glosa }}</td>
                     <td class="align-right">{{ number_format($datos->debe,2,'.',',') }}</td>

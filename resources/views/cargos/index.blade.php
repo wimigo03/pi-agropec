@@ -2,7 +2,7 @@
 @extends('layouts.dashboard')
 <style>
     #treeview {
-        min-height: 200px;            
+        min-height: 200px;
     }
     #contenido {
         min-height: 200px;
@@ -28,7 +28,7 @@
                     <div class="col-md-6">
                         <div class="card card-body">
                             <div id="contenido">
-                                <input type="hidden" value="{{ $cargos[0]->id }}" name="cargo_id" id="cargo_id">    
+                                <input type="hidden" value="{{ $cargos[0]->id }}" name="cargo_id" id="cargo_id">
                                 @include('cargos.partials.contenido')
                                 <div class="form-group row">
                                     <div class="col-md-12 text-right">

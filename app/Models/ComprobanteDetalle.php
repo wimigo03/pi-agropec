@@ -8,7 +8,7 @@ use App\Models\Comprobante;
 use App\Models\Empresa;
 use App\Models\Cliente;
 use App\Models\TipoCambio;
-use App\Models\Sucursal;
+use App\Models\CentroContable;
 use App\Models\User;
 use App\Models\Cargo;
 use App\Models\PlanCuenta;
@@ -33,7 +33,7 @@ class ComprobanteDetalle extends Model
         'pais_id',
         'user_autorizado_id',
         'plan_cuenta_id',
-        'sucursal_id',
+        'centro_contable_id',
         'plan_cuenta_auxiliar_id',
         'glosa',
         'debe',
@@ -79,7 +79,7 @@ class ComprobanteDetalle extends Model
         return $this->belongsTo(PlanCuentaAuxiliar::class,'plan_cuenta_auxiliar_id','id');
     }
 
-    public function sucursal(){
-        return $this->belongsTo(Sucursal::class,'sucursal_id','id');
+    public function centro(){
+        return $this->belongsTo(CentroContable::class,'centro_contable_id','id');
     }
 }

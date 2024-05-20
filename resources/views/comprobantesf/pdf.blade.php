@@ -98,7 +98,7 @@
                     <th>N</th>
                     <th>CODIGO</th>
                     <th>DESCRIPCION / GLOSA</th>
-                    <th>PROY</th>
+                    <th>CENTRO</th>
                     <th>DEBE(BS.)</th>
                     <th>HABER(BS.)</th>
                     <th>DEBE($U$)</th>
@@ -129,7 +129,7 @@
                             </u><br>
                             {{ $datos->glosa }}
                         </td>
-                        <td class="align-center align-superior">{{ $datos->sucursal->nombre }}</td>
+                        <td class="align-center align-superior">{{ $datos->centro->abreviatura }}</td>
                         <td class="align-right align-superior">{{ number_format($datos->debe,2,'.',',') }}</td>
                         <td class="align-right align-superior">{{ number_format($datos->haber,2,'.',',') }}</td>
                         <td class="align-right align-superior">{{ number_format($datos->debe * $comprobante->tipo_cambio,2,'.',',') }}</td>

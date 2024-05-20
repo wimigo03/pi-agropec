@@ -82,10 +82,10 @@
     </div>
     <div class="form-group row">
         <div class="col-md-3 px-0 pr-1 font-roboto-12">
-            <label for="sucursal" class="d-inline">Centro Contable</label>
-            <select id="sucursal_id" class="form-control select2">
+            <label for="centro_contable" class="d-inline">Centro Contable</label>
+            <select id="centro_contable_id" class="form-control select2">
                 <option value="">-</option>
-                @foreach ($sucursales as $index => $value)
+                @foreach ($centros_contables as $index => $value)
                     <option value="{{ $index }}">{{ $value }}</option>
                 @endforeach
             </select>

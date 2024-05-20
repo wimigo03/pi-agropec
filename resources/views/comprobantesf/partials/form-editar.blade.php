@@ -60,10 +60,10 @@
     </div>
     <div class="form-group row">
         <div class="col-md-3 px-0 pr-1 font-roboto-12">
-            <label for="sucursal" class="d-inline">Sucursal</label>
-            <select id="sucursal_id" class="form-control select2">
+            <label for="centro_contable" class="d-inline">Centro Contable</label>
+            <select id="centro_contable_id" class="form-control select2">
                 <option value="">-</option>
-                @foreach ($sucursales as $index => $value)
+                @foreach ($centros_contables as $index => $value)
                     <option value="{{ $index }}">{{ $value }}</option>
                 @endforeach
             </select>
@@ -134,7 +134,7 @@
                     <tr class="font-roboto-12 bg-warning text-white">
                         <td class="text-left p-1"><b>N°</b></td>
                         <td class="text-left p-1"><b>CUENTA</b></td>
-                        <td class="text-left p-1"><b>PROYECTO</b></td>
+                        <td class="text-left p-1"><b>CENTRO</b></td>
                         <td class="text-left p-1"><b>AUXILIAR</b></td>
                         <td class="text-left p-1"><b>GLOSA</b></td>
                         <td class="text-right p-1"><b>DEBE</b></td>
@@ -153,7 +153,7 @@
                                 <input type="hidden" value="{{ $datos->id }}" class="comprobante_detalle_id">
                             </td>
                             <td class="text-left p-1">{{ $datos->plan_cuenta->nombre }}</td>
-                            <td class="text-left p-1">{{ $datos->sucursal->nombre }}</td>
+                            <td class="text-left p-1">{{ $datos->centro->nombre }}</td>
                             <td class="text-left p-1">{{ $datos->plan_cuenta_auxiliar_id != null ? $datos->plan_cuenta_auxiliar->nombre : '-' }}</td>
                             <td class="text-left p-1">{{ $datos->glosa }}</td>
                             <td class="text-right p-1">{{ number_format($datos->debe,2,'.',',') }}</td>

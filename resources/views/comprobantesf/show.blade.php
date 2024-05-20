@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 @extends('layouts.dashboard')
 <style>
-    
+
 </style>
 @section('content')
     <div class="form-group row">
@@ -21,13 +21,13 @@
         <div class="col-md-3 px-0 pl-1 font-roboto-13">
             <b>Estado.- </b>
             @if ($comprobante->estado == '1')
-                <span class="text-secondary"><b><u>{{ $comprobante->status }}</u></b></span>    
+                <span class="text-secondary"><b><u>{{ $comprobante->status }}</u></b></span>
             @endif
             @if ($comprobante->estado == '2')
-                <span class="text-success"><b><u>{{ $comprobante->status }}</u></b></span>    
+                <span class="text-success"><b><u>{{ $comprobante->status }}</u></b></span>
             @endif
             @if ($comprobante->estado == '3')
-                <span class="text-danger"><b><u>{{ $comprobante->status }}</u></b></span>    
+                <span class="text-danger"><b><u>{{ $comprobante->status }}</u></b></span>
             @endif
         </div>
     </div>
@@ -66,14 +66,14 @@
                 @can('comprobante.show')
                     <span class="tts:right tts-slideIn tts-custom" aria-label="Ir" style="cursor: pointer;">
                         <a href="{{ route('comprobante.show',$comprobantei->id) }}">
-                            <span class="badge-with-padding 
-                                @if($comprobantei->estado == "1") 
-                                    badge badge-secondary 
-                                @else 
-                                    @if($comprobantei->estado == "2") 
-                                        badge badge-success 
-                                    @else 
-                                        badge badge-danger 
+                            <span class="badge-with-padding
+                                @if($comprobantei->estado == "1")
+                                    badge badge-secondary
+                                @else
+                                    @if($comprobantei->estado == "2")
+                                        badge badge-success
+                                    @else
+                                        badge badge-danger
                                     @endif
                                 @endif">
                                 {{ $comprobantei->nro_comprobante }}
@@ -106,7 +106,7 @@
                         <td class="text-left p-1"><b>N°</b></td>
                         <td class="text-left p-1"><b>CUENTA</b></td>
                         <td class="text-left p-1"><b>AUXILIAR</b></td>
-                        <td class="text-left p-1"><b>PROYECTO</b></td>
+                        <td class="text-left p-1"><b>CENTRO</b></td>
                         <td class="text-left p-1"><b>GLOSA</b></td>
                         <td class="text-right p-1"><b>DEBE</b></td>
                         <td class="text-right p-1"><b>HABER</b></td>
@@ -121,7 +121,7 @@
                             <td class="text-left p-1">{{ $cont++ }}</td>
                             <td class="text-left p-1">{{ $datos->plan_cuenta->nombre }}</td>
                             <td class="text-left p-1">{{ $datos->plan_cuenta_auxiliar != null ? $datos->plan_cuenta_auxiliar->nombre : '-' }}</td>
-                            <td class="text-left p-1">{{ $datos->sucursal->nombre }}</td>
+                            <td class="text-left p-1">{{ $datos->centro->nombre }}</td>
                             <td class="text-left p-1">{{ $datos->glosa }}</td>
                             <td class="text-right p-1">{{ number_format($datos->debe,2,'.',',') }}</td>
                             <td class="text-right p-1">{{ number_format($datos->haber,2,'.',',') }}</td>
@@ -144,7 +144,7 @@
                 @can('comprobantef.aprobar')
                     <button class="btn btn-outline-success font-verdana" type="button" onclick="procesar();">
                         <i class="fas fa-paper-plane"></i>&nbsp;Aprobar
-                    </button>    
+                    </button>
                 @endcan
                 @can('comprobantef.aprobar')
                     <button class="btn btn-outline-warning font-verdana" type="button" onclick="anular();">
@@ -164,14 +164,14 @@
     @include('layouts.notificaciones')
     <script>
         $(document).ready(function() {
-            
+
         });
 
         function alert(mensaje){
             $("#modal-alert .modal-body").html(mensaje);
             $('#modal-alert').modal({keyboard: false});
         }
-        
+
         function procesar() {
             $('#modal_confirmacion').modal({
                 keyboard: false
@@ -179,7 +179,7 @@
         }
 
         function confirmar(){
-            $(".btn").hide();            
+            $(".btn").hide();
             $(".spinner-btn").show();
             var id = $("#comprobante_id").val();
             var url = "{{ route('comprobantef.aprobar',':id') }}";
@@ -188,7 +188,7 @@
         }
 
         function anular(){
-            $(".btn").hide();            
+            $(".btn").hide();
             $(".spinner-btn").show();
             var id = $("#comprobante_id").val();
             var url = "{{ route('comprobantef.anular',':id') }}";
@@ -204,7 +204,7 @@
         }
 
         function cancelar(){
-            $(".btn").hide();            
+            $(".btn").hide();
             $(".spinner-btn").show();
             var id = $("#empresa_id").val();
             var url = "{{ route('comprobantef.index',':id') }}";

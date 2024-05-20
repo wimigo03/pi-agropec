@@ -39,18 +39,18 @@ class Cargo extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
         }
     }
 
     public function getTipoContratoAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "POR SERVICIO";
-            case '2': 
+            case '2':
                 return "PLANILLA DE SUELDO";
         }
     }

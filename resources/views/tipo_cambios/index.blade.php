@@ -4,7 +4,7 @@
     @include('tipo_cambios.partials.search')
     <div class="form-group row">
         <div class="col-md-6 px-0 pr-1">
-            @can('productos.create')
+            @can('tipo.cambio.create')
                 <button class="btn btn-outline-success font-verdana" type="button" onclick="create();">
                     <i class="fas fa-plus fa-fw"></i>
                 </button>

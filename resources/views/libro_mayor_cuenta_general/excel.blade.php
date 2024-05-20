@@ -31,7 +31,7 @@
     <tr>
         <td align="center"><b>FECHA</b></td>
         <td align="center"><b>COMPROBANTE</b></td>
-        <td align="center"><b>PROYECTO</b></td>
+        <td align="center"><b>CENTRO</b></td>
         <td align="center"><b>AUXILIAR</b></td>
         <td align="center"><b>CHEQUE</b></td>
         <td align="center"><b>GLOSA</b></td>
@@ -48,7 +48,7 @@
                 {{ $datos->nro_comprobante }}&nbsp;<b>{{ $datos->estado_abreviado}}</b>
             </td>
             <td align="center">
-                {{ $datos->proyecto }}
+                {{ $datos->centro }}
             </td>
             <td align="center">
                 {{ $datos->auxiliar }}

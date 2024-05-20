@@ -74,7 +74,7 @@ class LibroMayorCuentaGeneralController extends Controller
     public function procesarLibroMayorCuentaGeneral($empresa_id,$fecha_i,$fecha_f,$plan_cuenta_id,$estados){
         $comprobantes = DB::table('comprobante_detalles as a')
                                 ->join('comprobantes as b','b.id','a.comprobante_id')
-                                ->join('sucursales as c','c.id','a.sucursal_id')
+                                ->join('centros_contables as c','c.id','a.centro_contable_id')
                                 ->leftjoin('plan_cuentas_auxiliares as d','d.id','a.plan_cuenta_auxiliar_id')
                                 ->where('a.plan_cuenta_id',$plan_cuenta_id)
                                 ->whereBetween('b.fecha',[$fecha_i,$fecha_f])
@@ -95,7 +95,7 @@ class LibroMayorCuentaGeneralController extends Controller
                                             WHEN b.estado = 2 THEN 'A'
                                             ELSE 'N/A'
                                         END AS estado_abreviado"),
-                                        'c.nombre as proyecto',
+                                        'c.nombre as centro',
                                         DB::raw("if(isnull(a.plan_cuenta_auxiliar_id),'',d.nombre) as auxiliar"),
                                         'a.nro_cheque',
                                         'a.glosa',
