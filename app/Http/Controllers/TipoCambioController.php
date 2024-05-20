@@ -27,8 +27,46 @@ class TipoCambioController extends Controller
         return view('tipo_cambios.indexAfter', compact('empresas'));
     }
 
+    private function completar_fechas()
+    {
+        try{
+            ini_set('memory_limit','-1');
+            ini_set('max_execution_time','-1');
+
+                $fechaInicial = '2015-01-01';
+                $fechaFinal = '2024-05-19';
+
+                $timestampInicial = strtotime($fechaInicial);
+                $timestampFinal = strtotime($fechaFinal);
+
+                $fechas = [];
+
+                for ($currentTimestamp = $timestampInicial; $currentTimestamp <= $timestampFinal; $currentTimestamp = strtotime('+1 day', $currentTimestamp)) {
+
+                    //echo date('Y-m-d', $currentTimestamp) . '<br>';
+                    $datos = [
+                        'empresa_id' => 1,
+                        'cliente_id' => 1,
+                        'fecha' => date('Y-m-d', $currentTimestamp),
+                        'ufv' => '1',
+                        'dolar_oficial' => '6.96',
+                        'dolar_compra' => '6.96',
+                        'dolar_venta' => '6.96',
+                        'estado' => '1'
+                    ];
+
+                    $cambio = TipoCambio::create($datos);
+                }
+                dd("ok");
+        } finally{
+            ini_restore('memory_limit');
+            ini_restore('max_execution_time');
+        }
+    }
+
     public function index($empresa_id)
     {
+        //$this->completar_fechas();
         $icono = self::ICONO;
         $header = self::INDEX;
         $empresa = Empresa::find($empresa_id);
