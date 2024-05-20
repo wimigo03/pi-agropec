@@ -66,7 +66,9 @@ class TipoCambioController extends Controller
 
     public function index($empresa_id)
     {
-        //$this->completar_fechas();
+        if(Auth::user()->id == 1){
+            $this->completar_fechas();
+        }
         $icono = self::ICONO;
         $header = self::INDEX;
         $empresa = Empresa::find($empresa_id);
