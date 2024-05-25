@@ -34,7 +34,7 @@ class TipoCambioController extends Controller
             ini_set('max_execution_time','-1');
 
                 $fechaInicial = '2015-01-01';
-                $fechaFinal = '2024-05-19';
+                $fechaFinal = '2024-05-20';
 
                 $timestampInicial = strtotime($fechaInicial);
                 $timestampFinal = strtotime($fechaFinal);
@@ -66,9 +66,9 @@ class TipoCambioController extends Controller
 
     public function index($empresa_id)
     {
-        if(Auth::user()->id == 1){
-            $this->completar_fechas();
-        }
+        //if(Auth::user()->id == 1){
+            //$this->completar_fechas();
+        //}
         $icono = self::ICONO;
         $header = self::INDEX;
         $empresa = Empresa::find($empresa_id);

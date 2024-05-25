@@ -26,7 +26,7 @@ class BalanceGeneralController extends Controller
                             ->byCliente()
                             ->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
-            return redirect()->route('balance_general.index',Auth::user()->empresa_id);
+            return redirect()->route('balance.general.index',Auth::user()->empresa_id);
         }
         return view('balance_general.indexAfter', compact('empresas'));
     }
