@@ -30,107 +30,113 @@
                 @foreach ($ingresos as $ing)
                     @php
                         $nroPuntos = 1;
-                        for ($i=0; $i < strlen($ing->codigo); $i++) { 
+                        for ($i=0; $i < strlen($ing->codigo); $i++) {
                             if($ing->codigo[$i] == '.'){
                                 $nroPuntos++;
                             }
                         }
                         $nroColumna = $nroMaxColumna - $nroPuntos;
                     @endphp
-                    <tr class="font-roboto-11">
-                        <td class="text-justify p-1">
-                            <strong>
-                                {{ $ing->codigo }}
-                            </strong>
-                        </td>
-                        <td class="text-justify p-1">
-                            <strong>
-                                {{ $ing->nombre  }}
-                            </strong>
-                        </td>
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                        <td class="text-right p-1">
-                            {{ number_format($totales[$ing->id],2,'.',',') }}
-                        </td>
-                        @php
-                            $nroColumna = $nroMaxColumna - $nroColumna -1;
-                        @endphp
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                    </tr>
+                    @if ($totales[$ing->id] != 0)
+                        <tr class="font-roboto-11">
+                            <td class="text-justify p-1">
+                                <strong>
+                                    {{ $ing->codigo }}
+                                </strong>
+                            </td>
+                            <td class="text-justify p-1">
+                                <strong>
+                                    {{ $ing->nombre  }}
+                                </strong>
+                            </td>
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                            <td class="text-right p-1">
+                                {{ number_format($totales[$ing->id],2,'.',',') }}
+                            </td>
+                            @php
+                                $nroColumna = $nroMaxColumna - $nroColumna -1;
+                            @endphp
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                        </tr>
+                    @endif
                 @endforeach
                 @foreach ($costos as $costo)
                     @php
                         $nroPuntos = 1;
-                        for ($i=0; $i < strlen($costo->codigo); $i++) { 
+                        for ($i=0; $i < strlen($costo->codigo); $i++) {
                             if($costo->codigo[$i] == '.'){
                                 $nroPuntos++;
                             }
                         }
                         $nroColumna = $nroMaxColumna - $nroPuntos;
                     @endphp
-                    <tr class="font-roboto-11">
-                        <td class="text-justify p-1">
-                            <strong>
-                                {{ $costo->codigo }}
-                            </strong>
-                        </td>
-                        <td class="text-justify p-1">
-                            <strong>
-                                {{ $costo->nombre  }}
-                            </strong>
-                        </td>
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                        <td class="text-right p-1">
-                            {{number_format($totales[$costo->id],2,'.',',') }}
-                        </td>
-                        @php
-                            $nroColumna = $nroMaxColumna - $nroColumna - 1;
-                        @endphp
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                    </tr>
+                    @if ($totales[$costo->id] != 0)
+                        <tr class="font-roboto-11">
+                            <td class="text-justify p-1">
+                                <strong>
+                                    {{ $costo->codigo }}
+                                </strong>
+                            </td>
+                            <td class="text-justify p-1">
+                                <strong>
+                                    {{ $costo->nombre  }}
+                                </strong>
+                            </td>
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                            <td class="text-right p-1">
+                                {{number_format($totales[$costo->id],2,'.',',') }}
+                            </td>
+                            @php
+                                $nroColumna = $nroMaxColumna - $nroColumna - 1;
+                            @endphp
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                        </tr>
+                    @endif
                 @endforeach
                 @foreach ($gastos as $gasto)
                     @php
                         $nroPuntos = 1;
-                        for ($i=0; $i < strlen($gasto->codigo); $i++) { 
+                        for ($i=0; $i < strlen($gasto->codigo); $i++) {
                             if($gasto->codigo[$i] == '.'){
                                 $nroPuntos++;
                             }
                         }
                         $nroColumna = $nroMaxColumna - $nroPuntos;
                     @endphp
-                    <tr class="font-roboto-11">
-                        <td class="text-justify p-1">
-                            <strong>
-                                {{ $gasto->codigo }}
-                            </strong>
-                        </td>
-                        <td class="text-justify p-1">
-                            <strong>
-                                {{ $gasto->nombre  }}
-                            </strong>
-                        </td>
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                        <td class="text-right p-1">
-                            {{number_format($totales[$gasto->id],2,'.',',') }}
-                        </td>
-                        @php
-                            $nroColumna = $nroMaxColumna - $nroColumna - 1;
-                        @endphp
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                    </tr>
+                    @if ($totales[$gasto->id] != 0)
+                        <tr class="font-roboto-11">
+                            <td class="text-justify p-1">
+                                <strong>
+                                    {{ $gasto->codigo }}
+                                </strong>
+                            </td>
+                            <td class="text-justify p-1">
+                                <strong>
+                                    {{ $gasto->nombre  }}
+                                </strong>
+                            </td>
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                            <td class="text-right p-1">
+                                {{number_format($totales[$gasto->id],2,'.',',') }}
+                            </td>
+                            @php
+                                $nroColumna = $nroMaxColumna - $nroColumna - 1;
+                            @endphp
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                        </tr>
+                    @endif
                 @endforeach
             </tbody>
             <tfoot class="font-roboto-11">

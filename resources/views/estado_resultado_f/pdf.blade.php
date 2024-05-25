@@ -52,22 +52,24 @@
                         }
                         $nroColumna = $nroMaxColumna - $nroPuntos;
                     @endphp
-                    <tr class="sub-linea-inferior">
-                        <td>{{ $ing->codigo }}</td>
-                        <td>{{ $ing->nombre }}</td>
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                        <td class="align-right">
-                            {{ number_format($totales[$ing->id],2,'.',',') }}
-                        </td>
-                        @php
-                            $nroColumna = $nroMaxColumna - $nroColumna -1;
-                        @endphp
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                    </tr>
+                    @if ($totales[$ing->id] != 0)
+                        <tr class="sub-linea-inferior">
+                            <td>{{ $ing->codigo }}</td>
+                            <td>{{ $ing->nombre }}</td>
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                            <td class="align-right">
+                                {{ number_format($totales[$ing->id],2,'.',',') }}
+                            </td>
+                            @php
+                                $nroColumna = $nroMaxColumna - $nroColumna -1;
+                            @endphp
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                        </tr>
+                    @endif
                 @endforeach
                 @foreach ($costos as $costo)
                     @php
@@ -79,22 +81,24 @@
                         }
                         $nroColumna = $nroMaxColumna - $nroPuntos;
                     @endphp
-                    <tr class="sub-linea-inferior">
-                        <td>{{ $costo->codigo }}</td>
-                        <td>{{ $costo->nombre  }}</td>
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                        <td class="align-right">
-                            {{ number_format($totales[$costo->id],2,'.',',') }}
-                        </td>
-                        @php
-                            $nroColumna = $nroMaxColumna - $nroColumna - 1;
-                        @endphp
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                    </tr>
+                    @if ($totales[$costo->id] != 0)
+                        <tr class="sub-linea-inferior">
+                            <td>{{ $costo->codigo }}</td>
+                            <td>{{ $costo->nombre  }}</td>
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                            <td class="align-right">
+                                {{ number_format($totales[$costo->id],2,'.',',') }}
+                            </td>
+                            @php
+                                $nroColumna = $nroMaxColumna - $nroColumna - 1;
+                            @endphp
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                        </tr>
+                    @endif
                 @endforeach
                 @foreach ($gastos as $gasto)
                     @php
@@ -106,22 +110,24 @@
                         }
                         $nroColumna = $nroMaxColumna - $nroPuntos;
                     @endphp
-                    <tr class="sub-linea-inferior">
-                        <td>{{ $gasto->codigo }}</td>
-                        <td>{{ $gasto->nombre  }}</td>
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                        <td class="align-right">
-                            {{ number_format($totales[$gasto->id],2,'.',',') }}
-                        </td>
-                        @php
-                            $nroColumna = $nroMaxColumna - $nroColumna - 1;
-                        @endphp
-                        @for ($i = 0; $i < $nroColumna; $i++)
-                            <td></td>
-                        @endfor
-                    </tr>
+                    @if ($totales[$gasto->id] != 0)
+                        <tr class="sub-linea-inferior">
+                            <td>{{ $gasto->codigo }}</td>
+                            <td>{{ $gasto->nombre  }}</td>
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                            <td class="align-right">
+                                {{ number_format($totales[$gasto->id],2,'.',',') }}
+                            </td>
+                            @php
+                                $nroColumna = $nroMaxColumna - $nroColumna - 1;
+                            @endphp
+                            @for ($i = 0; $i < $nroColumna; $i++)
+                                <td></td>
+                            @endfor
+                        </tr>
+                    @endif
                 @endforeach
                 <tr>
                     <td>&nbsp;</td>
