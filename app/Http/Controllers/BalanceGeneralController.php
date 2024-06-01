@@ -119,6 +119,7 @@ class BalanceGeneralController extends Controller
                                                     ->whereBetween('c.fecha',[$start_date,$end_date])
                                                     ->where('c.empresa_id',$empresa_id)
                                                     ->whereIn('c.estado',$status)
+                                                    ->where('comprobante_detalles.estado','1')
                                                     ->select('c.id',
                                                                 'c.fecha',
                                                                 'comprobante_detalles.plan_cuenta_id',
