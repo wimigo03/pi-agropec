@@ -116,7 +116,7 @@ class ZonaController extends Controller
             $datos = [
                 'sucursal_id' => $request->sucursal_id,
                 'empresa_id' => $sucursal->empresa_id,
-                'cliente_id' => $sucursal->cliente_id,
+                'pi_cliente_id' => $sucursal->pi_cliente_id,
                 'codigo' => $request->codigo,
                 'nombre' => $request->nombre,
                 'mesas_disponibles' => 0,
@@ -148,7 +148,7 @@ class ZonaController extends Controller
             $datos = [
                 'sucursal_id' => $request->sucursal_id,
                 'empresa_id' => $sucursal->empresa_id,
-                'cliente_id' => $sucursal->cliente_id,
+                'pi_cliente_id' => $sucursal->pi_cliente_id,
                 'codigo' => $request->codigo,
                 'nombre' => $request->nombre,
                 'mesas_disponibles' => 0,

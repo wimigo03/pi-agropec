@@ -107,7 +107,7 @@
         <label for="domicilio" class="d-inline">Domicilio</label>
         <input type="text" name="domicilio" value="{{ old('domicilio') }}" id="domicilio" class="form-control font-roboto-12 obligatorio" oninput="this.value = this.value.toUpperCase(); verificarObligatorio();">
     </div>
-    <div class="col-md-2 pr-1 pl-1 font-roboto-12">
+    <div class="col-md-2 pl-1 font-roboto-12">
         <label for="e_civil" class="d-inline">Estado Civil</label>
         <div class="select2-container--obligatorio" id="obligatorio_estado_civil">
             <select name="estado_civil" id="estado_civil" class="form-control font-roboto-12 select2 obligatorio" onchange="verificarObligatorio();">

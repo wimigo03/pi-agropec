@@ -28,9 +28,7 @@ class PersonalController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('personal.index',Auth::user()->empresa_id);
         }
@@ -81,10 +79,7 @@ class PersonalController extends Controller
         $icono = self::ICONO;
         $header = self::CREATE;
         $empresa = Empresa::find($id);
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->where('id',$id)
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->where('id',$id)->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         $nacionalidades = Personal::NACIONALIDADES;
         $extensiones = Personal::EXTENSIONES;
         $licencia_categorias = Personal::LICENCIA_CATEGORIAS;
@@ -141,7 +136,7 @@ class PersonalController extends Controller
             $user = User::create([
                 'cargo_id' => $request->cargo_id,
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => Auth::user()->cliente_id,
+                'pi_cliente_id' => Auth::user()->pi_cliente_id,
                 'name' => $request->primer_nombre . ' ' . $apellidos,
                 'username' => $username_minus,
                 'password' => bcrypt('123456654321'),
@@ -152,7 +147,7 @@ class PersonalController extends Controller
                 'user_id' => $user->id,
                 'cargo_id' => $request->cargo_id,
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'primer_nombre' => $request->primer_nombre,
                 'segundo_nombre' => $request->segundo_nombre,
                 'apellido_paterno' => $request->ap_paterno,
@@ -192,7 +187,7 @@ class PersonalController extends Controller
                         'user_id' => $user->id,
                         'cargo_id' => $request->cargo_id,
                         'empresa_id' => $request->empresa_id,
-                        'cliente_id' => $empresa->cliente_id,
+                        'pi_cliente_id' => $empresa->pi_cliente_id,
                         'nombre' => $request->nombre_familiar[$cont],
                         'tipo' => $request->tipo_familiar[$cont],
                         'observacion' => $request->otro_tipo_familiar[$cont],
@@ -213,7 +208,7 @@ class PersonalController extends Controller
             if($request->horario_id == '_MANUAL_'){
                 $datos_horario = ([
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'nombre' => 'MANUAL',
                     'estado' => '1'
                 ]);
@@ -223,7 +218,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_lunes = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'LUNES',
                     'entrada_1' => $request->dia_inicio_lunes,
                     'salida_1' => $request->dia_final_lunes,
@@ -237,7 +232,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_martes = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'MARTES',
                     'entrada_1' => $request->dia_inicio_martes,
                     'salida_1' => $request->dia_final_martes,
@@ -251,7 +246,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_miercoles = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'MIERCOLES',
                     'entrada_1' => $request->dia_inicio_miercoles,
                     'salida_1' => $request->dia_final_miercoles,
@@ -265,7 +260,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_jueves = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'JUEVES',
                     'entrada_1' => $request->dia_inicio_jueves,
                     'salida_1' => $request->dia_final_jueves,
@@ -279,7 +274,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_viernes = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'VIERNES',
                     'entrada_1' => $request->dia_inicio_viernes,
                     'salida_1' => $request->dia_final_viernes,
@@ -293,7 +288,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_sabado = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'SABADO',
                     'entrada_1' => $request->dia_inicio_sabado,
                     'salida_1' => $request->dia_final_sabado,
@@ -307,7 +302,7 @@ class PersonalController extends Controller
                 $datos_horario_detalle_domingo = ([
                     'horario_id' => $horario->id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'dia' => 'DOMINGO',
                     'entrada_1' => $request->dia_inicio_domingo,
                     'salida_1' => $request->dia_final_domingo,
@@ -331,7 +326,7 @@ class PersonalController extends Controller
                 'user_id' => $user->id,
                 'cargo_id' => $request->cargo_id,
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'horario_id' => $horario_id,
                 'codigo_ingreso' => $codigo_ingreso,
                 'biometrico_id' => $request->biometrico,
@@ -352,7 +347,7 @@ class PersonalController extends Controller
                     'user_id' => $user->id,
                     'cargo_id' => $request->cargo_id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'afp_id' => $request->afp_id,
                     'tipo' => 'F',
                     'fecha_ingreso' => date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_ingreso_fiscal))),
@@ -371,7 +366,7 @@ class PersonalController extends Controller
                     'user_id' => $user->id,
                     'cargo_id' => $request->cargo_id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'tipo' => 'I',
                     'fecha_ingreso' => date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_ingreso_interna))),
                     'sueldo' => $request->haber_basico_interno,
@@ -389,7 +384,7 @@ class PersonalController extends Controller
                     'user_id' => $user->id,
                     'cargo_id' => $request->cargo_id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'tipo' => 'S',
                     'fecha_ingreso' => date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_ingreso_servicio))),
                     'sueldo' => $request->haber_basico_servicio,
@@ -402,7 +397,7 @@ class PersonalController extends Controller
 
             $datos_auxiliar = ([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'user_id' => $user->id,
                 'nombre' => $personal->primer_nombre . ' ' . $personal->apellido_paterno . ' ' . $personal->apellido_materno,
                 'class_name' => Personal::class,
@@ -461,7 +456,7 @@ class PersonalController extends Controller
             $cargo = Cargo::find($request->cargo_id);
             $cargo->update([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'nombre' => $request->cargo,
                 'parent_id' => $request->parent_id,
                 'email' => $request->email,

@@ -2,8 +2,8 @@
     @csrf
     <div class="form-group row">
         <div class="col-md-5 pr-1 font-roboto-12">
-            <label for="cliente_id" class="d-inline">Cliente</label>
-            <input type="hidden" name="cliente_id" value="{{ $empresa->cliente_id }}">
+            <label for="pi_cliente_id" class="d-inline">Cliente</label>
+            <input type="hidden" name="pi_cliente_id" value="{{ $empresa->pi_cliente_id }}">
             <input type="text" value="{{ $empresa->cliente->razon_social }}" class="form-control font-roboto-12" disabled>
         </div>
         <div class="col-md-5 pr-1 pl-1 font-roboto-12">

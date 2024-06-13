@@ -20,17 +20,6 @@
 @section('content')
     @include('productos.partials.menu')
     @include('productos.partials.form-create')
-    <div class="form-group row">
-        <div class="col-md-12 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
     @include('productos.partials.modal-create-unidad')
 @endsection
 @section('scripts')
@@ -283,7 +272,7 @@
         }
 
         function cancelar(){
-            $(".btn").hide();            
+            $(".btn").hide();
             $(".spinner-btn").show();
             var id = $("#empresa_id").val();
             var url = "{{ route('productos.index',':id') }}";

@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display responsive table-striped hover-orange">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-center p-1"><b>COD.</b></td>
                     <td class="text-center p-1"><b>PAIS</b></td>
                     <td class="text-center p-1"><b>INICIO</b></td>
@@ -16,9 +16,9 @@
             </thead>
             <tbody>
                 @foreach ($clientes as $datos)
-                    <tr class="font-roboto-12">
+                    <tr class="font-roboto-11">
                         <td class="text-center p-1">{{ $datos->id }}</td>
-                        <td class="text-center p-1">{{ $datos->pais }}</td>
+                        <td class="text-center p-1">{{ strtoupper($datos->_pais->nombre) }}</td>
                         <td class="text-center p-1">{{ $datos->fecha_i }}</td>
                         <td class="text-left p-1">{{ $datos->razon_social }}</td>
                         <td class="text-left p-1">{{ $datos->nombre }}</td>
@@ -36,7 +36,7 @@
                 @endforeach
             </tbody>
             <tfoot>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td colspan="12">
                         {{ $clientes->appends(Request::all())->links() }}
                         <p class="text-muted">Mostrando

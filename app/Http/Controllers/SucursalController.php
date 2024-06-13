@@ -17,10 +17,8 @@ class SucursalController extends Controller
 
     public function indexAfter()
     {
-        $empresas_info = Empresa::where('cliente_id',Auth::user()->cliente_id)->get();
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas_info = Empresa::where('pi_cliente_id',Auth::user()->pi_cliente_id)->get();
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('sucursal.index',Auth::user()->empresa_id);
         }
@@ -76,7 +74,7 @@ class SucursalController extends Controller
         try{
             $sucursal = Sucursal::create([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => Auth::user()->cliente_id,
+                'pi_cliente_id' => Auth::user()->pi_cliente_id,
                 'nombre' => $request->nombre,
                 'ciudad' => $request->ciudad,
                 'direccion' => $request->direccion,
@@ -114,7 +112,7 @@ class SucursalController extends Controller
             $sucursal = Sucursal::find($request->sucursal_id);
             $sucursal->update([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => Auth::user()->cliente_id,
+                'pi_cliente_id' => Auth::user()->pi_cliente_id,
                 'nombre' => $request->nombre,
                 'ciudad' => $request->ciudad,
                 'direccion' => $request->direccion,

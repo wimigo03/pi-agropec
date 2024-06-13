@@ -13,33 +13,23 @@
 </style>
 @section('content')
     @include('tipo_cambios.partials.form-create')
-    <div class="form-group row">
-        <div class="col-md-12 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent
     @include('layouts.notificaciones')
     <script>
         $(document).ready(function() {
-            $("#fecha").datepicker({
-                inline: false,
-                dateFormat: "dd/mm/yy",
-                maxDate: 0,
-                autoClose: true
-            });
-
             var cleave = new Cleave('#fecha', {
                 date: true,
-                datePattern: ['d', 'm', 'Y']
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
+            });
+
+            $("#fecha").datepicker({
+                inline: false,
+                dateFormat: "dd-mm-yy",
+                maxDate: 0,
+                autoClose: true
             });
 
             var cleave = new Cleave('#ufv', {
@@ -159,19 +149,15 @@
         }
 
         function confirmar(){
-            var url = "{{ route('tipo.cambio.store') }}";
-            $("#form").attr('action', url);
             $(".btn").hide();
             $(".spinner-btn").show();
+            var url = "{{ route('tipo.cambio.store') }}";
+            $("#form").attr('action', url);
             $("#form").submit();
         }
 
         function cancelar(){
-            $(".btn").hide();
-            $(".spinner-btn").show();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('tipo.cambio.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('tipo.cambio.index') }}";
             window.location.href = url;
         }
     </script>

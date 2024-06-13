@@ -11,15 +11,16 @@
       </div>
       <div class="modal-body text-center">
         Estas por <span class="text-success"><b>[Confirmar]</b></span> este proceso.
-        <b>¿Estas seguro que desea continuar?</b>
+        <br>
+        <b>¿Estas seguro que desea continuar...?</b>
       </div>
       <div class="modal-footer">
-        <button class="btn btn-primary font-verdana" type="button" onclick="confirmar();">
-          <i class="fas fa-paper-plane" aria-hidden="true"></i>&nbsp;Confirmar
-        </button>
-        <button class="btn btn-secondary font-verdana text-white" type="button" data-dismiss="modal">
-            <i class="fas fa-times"></i>&nbsp;Cancelar
-        </button>
+        <span class="btn btn-primary font-roboto-12" onclick="confirmar();">
+          <i class="fas fa-paper-plane fa-fw" aria-hidden="true"></i>&nbsp;Confirmar
+        </span>
+        <span class="btn btn-secondary font-roboto-12 text-white" data-dismiss="modal">
+            <i class="fas fa-times fa-fw"></i>&nbsp;Cancelar
+        </span>
         <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
       </div>
     </div>

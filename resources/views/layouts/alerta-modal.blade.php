@@ -9,7 +9,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body font-verdana-bg">
+      <div class="modal-body font-verdana-bg text-center">
         ...
       </div>
       <div class="modal-footer">

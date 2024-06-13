@@ -47,17 +47,11 @@
         function confirmar(){
             var url = "{{ route('balance.apertura.store') }}";
             $("#form").attr('action', url);
-            $(".btn").hide();
-            $(".spinner-btn").show();
             $("#form").submit();
         }
 
         function cancelar(){
-            $(".btn").hide();
-            $(".spinner-btn").show();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.apertura.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('balance.apertura.index') }}";
             window.location.href = url;
         }
     </script>

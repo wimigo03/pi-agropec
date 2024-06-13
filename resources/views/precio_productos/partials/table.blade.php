@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table id="table-precios" class="table display responsive table-striped hover-orange">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-left p-1" rowspan="2" style="vertical-align: bottom;"><b>ID</b></td>
                     <td class="text-left p-1" rowspan="2" style="vertical-align: bottom;"><b>TIPO</b></td>
                     <td class="text-left p-1" rowspan="2" style="vertical-align: bottom;"><b>CODIGO</b></td>
@@ -16,7 +16,7 @@
                         <td class="text-center p-1" rowspan="2" style="vertical-align: bottom;"><b><i class="fas fa-bars"></i></b></td>
                     @endcanany
                 </tr>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-right p-1"><b>$U$</b></td>
                     <td class="text-right p-1"><b>BS.</b></td>
                     <td class="text-right p-1"><b>$U$</b></td>
@@ -58,14 +58,14 @@
                             <input type="text" name="porcentaje_detalle[]" placeholder="0" class="form-control font-roboto-12 text-right input-porcentaje-detalle" readonly>
                         </td>
                         <td class="text-center p-1" width="150px">
-                            <span class="badge-with-padding 
-                                @if($datos->status == "HABILITADO") 
-                                    badge badge-success 
-                                @else 
-                                    @if($datos->status == "NO HABILITADO") 
-                                        badge badge-danger 
-                                    @else 
-                                        badge badge-warning text-white 
+                            <span class="badge-with-padding
+                                @if($datos->status == "HABILITADO")
+                                    badge badge-success
+                                @else
+                                    @if($datos->status == "NO HABILITADO")
+                                        badge badge-danger
+                                    @else
+                                        badge badge-warning text-white
                                     @endif
                                 @endif">
                                 {{ $datos->status }}

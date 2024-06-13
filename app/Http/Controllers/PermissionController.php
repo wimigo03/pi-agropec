@@ -23,7 +23,7 @@ class PermissionController extends Controller
             $permission = Permission::find($permission->id);
             $permission->update([
                 'empresa_id' => '1',
-                'cliente_id' => '1',
+                'pi_cliente_id' => '1',
                 'modulo_id' => '2',
             ]);
         }
@@ -33,9 +33,7 @@ class PermissionController extends Controller
     public function indexAfter()
     {
         //***$this->completar_datos_permissions();
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('permissions.index',Auth::user()->empresa_id);
         }
@@ -96,7 +94,7 @@ class PermissionController extends Controller
             $empresa = Empresa::find($request->empresa_id);
             $permission = Permission::create([
                 'empresa_id' => $empresa->id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'modulo_id' => $request->modulo_id,
                 'title' => $titulo,
                 'name' => $request->nombre,

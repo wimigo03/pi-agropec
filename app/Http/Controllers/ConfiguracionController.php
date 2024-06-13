@@ -24,30 +24,30 @@ class ConfiguracionController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('configuracion.index',Auth::user()->empresa_id);
         }
         return view('configuracion.indexAfter', compact('empresas'));
     }
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
         $estados = configuracion::ESTADOS;
-        $empresa = Empresa::find($empresa_id);
+        /*$empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');*/
         $configuraciones = Configuracion::query()
-                                            ->ByEmpresa($empresa_id)
+                                            ->byPiCliente(Auth::user()->pi_cliente_id)
                                             ->orderBy('id','desc')
                                             ->paginate(10);
-        return view('configuracion.index', compact('icono','header','estados','empresa','configuraciones'));
+        return view('configuracion.index', compact('icono','header','estados','configuraciones'));
     }
 
     public function search(Request $request)
-    {
+    {dd($request->all());
         $fecha = date('Y-m-d');
         $tipo_cambio = TipoCambio::where('fecha',$fecha)->first();
         if($tipo_cambio == null){
@@ -70,18 +70,19 @@ class ConfiguracionController extends Controller
         return view('precio_productos.index', compact('tipo_cambio','icono','header','estados','tipo_precios','tipo_movimientos','empresa','precio_productos'));
     }
 
-    public function create($empresa_id)
+    public function create()
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         $tipos = configuracion::TIPOS;
-        return view('configuracion.create', compact('icono','header','empresa','tipos'));
+        return view('configuracion.create', compact('icono','header','empresas','tipos'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'empresa_id' => 'required',
             'tipo' => 'required',
             'nombre' => 'required',
             'detalle' => 'required'
@@ -91,7 +92,7 @@ class ConfiguracionController extends Controller
             $user = User::where('id',Auth::user()->id)->first();
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'nombre' => $request->nombre,
                 'tipo' => $request->tipo,
                 'detalle' => $request->detalle,
@@ -99,9 +100,9 @@ class ConfiguracionController extends Controller
             ];
             $configuracion = Configuracion::create($datos);
 
-            return redirect()->route('configuracion.index',['empresa_id' => $request->empresa_id])->with('success_message', 'CONFIGURACION CREADA.');
+            return redirect()->route('configuracion.index')->with('success_message', 'CONFIGURACION CREADA.');
         } catch (ValidationException $e) {
-            return redirect()->route('configuracion.create',$request->empresa_id)
+            return redirect()->route('configuracion.create')
                 ->withErrors($e->validator->errors())
                 ->withInput();
         }
@@ -157,7 +158,7 @@ class ConfiguracionController extends Controller
                 $datos = [
                     'configuracion_id' => $request->configuracion_id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'user_id' => Auth::user()->id,
                     'dia' => $request->dia,
                     'mes' => $request->mes,

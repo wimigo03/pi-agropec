@@ -1,9 +1,10 @@
-<div class="form-group row">
-    <div class="col-md-8 px-0 pr-1">
+@if (isset($plan_de_cuentas))
+    <div class="form-group row">
+    <div class="col-md-8 px-1 pr-1">
         <div class="card card-body">
             @if (isset($plan_de_cuentas))
                 <div class="row">
-                    <div class="col-md-10 px-0 pr-1">
+                    <div class="col-md-10 px-1 pr-1">
                         <div id="treeview"></div>
                     </div>
                     <div class="col-md-2 px-4 text-right">
@@ -36,7 +37,7 @@
                                         <span class="btns btn btn-sm btn-secondary font-verdana" onclick="create();">
                                             <i class="fa-solid fa-plus fa-fw"></i>
                                         </span>
-                                    </span> 
+                                    </span>
                                 </div>
                             </div>
                         @endcan--}}
@@ -46,7 +47,7 @@
                                     <span class="tts:left tts-slideIn tts-custom" aria-label="Crear Plan de Cuenta Dependiente" style="cursor: pointer;">
                                         <span class="btns btn btn-sm btn-info font-verdana" onclick="createSub();">
                                             <i class="fa-solid fa-folder-tree fa-fw"></i>
-                                        </span> 
+                                        </span>
                                     </span>
                                 </div>
                             </div>
@@ -89,14 +90,15 @@
             @endif
         </div>
     </div>
-    <div class="col-md-4 px-0 pl-1">
+    <div class="col-md-4 px-1 pl-1">
         <div class="card card-body">
             <div id="contenido">
-                <input type="hidden" value="#" name="plancuenta_id" id="plancuenta_id">    
+                <input type="hidden" value="#" name="plancuenta_id" id="plancuenta_id">
                 @if (isset($plan_de_cuentas))
                     @include('plan_cuentas.partials.contenido')
                 @endif
             </div>
         </div>
     </div>
-</div>
+    </div>
+@endif

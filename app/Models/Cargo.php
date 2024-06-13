@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Empresa;
 use App\Models\Cargo;
 
@@ -14,7 +14,7 @@ class Cargo extends Model
 
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'plan_cuenta_id',
         'nombre',
         'codigo',
@@ -56,7 +56,7 @@ class Cargo extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function empresa(){

@@ -4,7 +4,7 @@
     .select2 + .select2-container .select2-selection__rendered {
         font-size: 11px;
     }
-    
+
     .select2-results__option {
         font-size: 13px;
     }
@@ -16,7 +16,7 @@
     .font-weight-bold {
         font-weight: bold;
     }
-    
+
     .select2-container--obligatorio .select2-selection {
         border-color: red !important;
     }
@@ -24,10 +24,10 @@
     #tablaContainer {
         display: flex;
         justify-content: center;
-        align-items: center; 
+        align-items: center;
     }
 
-    #table-zona tbody td:hover{ 
+    #table-zona tbody td:hover{
 	    background: #ffd54f !important;
 	}
 
@@ -48,7 +48,7 @@
         background-color: #f2f2f2;
     }
 
-    
+
     .imagen-con-texto {
         position: relative;
         top: 20%;
@@ -64,13 +64,13 @@
     }
 
     .circulo-texto {
-        position: absolute; 
-        top: -10%; 
-        left: 50%; 
-        transform: translate(-50%, -50%); 
-        width: 30px; 
-        height: 30px; 
-        border-radius: 50%; 
+        position: absolute;
+        top: -10%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
         overflow: hidden;
 	    opacity: 0.8;
         border: 1px solid #ffffff;
@@ -83,24 +83,19 @@
     }
 </style>
 @section('content')
-<div class="row justify-content-center">
-    <div class="col-md-12">
-        @include('layouts.partials.header')
-        @include('mesas.partials.form-setting')
-        {{--<div class="form-group row">
-            <div class="col-md-12 text-right">
-                <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                    <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-                </button>
-                <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                    &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-                </button>
-                <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-            </div>
-        </div>--}}
-        @include('mesas.partials.modal-asignar-mesa')
-    </div>
-</div>
+    @include('mesas.partials.form-setting')
+    {{--<div class="form-group row">
+        <div class="col-md-12 text-right">
+            <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
+                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
+            </button>
+            <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
+                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
+            </button>
+            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
+        </div>
+    </div>--}}
+    @include('mesas.partials.modal-asignar-mesa')
 @endsection
 @section('scripts')
     @parent

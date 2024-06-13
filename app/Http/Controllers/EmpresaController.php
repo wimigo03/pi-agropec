@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Cargo;
 use App\Models\User;
 use App\Models\Personal;
@@ -22,22 +22,30 @@ use Auth;
 
 class EmpresaController extends Controller
 {
-    public function index($empresa_id)
+    public function index($pi_cliente_id)
     {
-        $empresas = Empresa::where('cliente_id',$empresa_id)->paginate(10);
-        $cliente = Cliente::find($empresa_id);
+        $empresas = Empresa::where('pi_cliente_id',$pi_cliente_id)->paginate(10);
+        $cliente = PiCliente::find($pi_cliente_id);
         $estados = Empresa::ESTADOS;
         return view('empresas.index', compact('empresas','cliente','estados'));
     }
 
     public function search(Request $request)
     {
-        dd($request->all());
+        $empresas = Empresa::query()
+                            ->byPiCliente($request->pi_cliente_id)
+                            ->byCodigo($request->codigo)
+                            ->byNombreComercial($request->nombre_comercial)
+                            ->byTelefono($request->telefono)
+                            ->paginate(10);
+        $cliente = PiCliente::find($request->pi_cliente_id);
+        $estados = Empresa::ESTADOS;
+        return view('empresas.index', compact('empresas','cliente','estados'));
     }
 
-    public function create($cliente_id)
+    public function create($pi_cliente_id)
     {
-        $cliente = Cliente::find($cliente_id);
+        $cliente = PiCliente::find($pi_cliente_id);
         $modulos = Modulo::where('estado','1')->pluck('nombre','id');
         return view('empresas.create', compact('cliente','modulos'));
     }
@@ -45,7 +53,7 @@ class EmpresaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre_comercial' => 'required|unique:empresas,nombre_comercial,null,id,cliente_id,' . $request->cliente_id,
+            'nombre_comercial' => 'required|unique:empresas,nombre_comercial,null,id,pi_cliente_id,' . $request->pi_cliente_id,
             'direccion' => 'required',
             'logo' => 'nullable|file|mimes:png,jpg,jpeg|max:2048',
             'cover' => 'nullable|file|mimes:png,jpg,jpeg|max:2048',
@@ -58,7 +66,7 @@ class EmpresaController extends Controller
             $empresa = $this->crear_empresa(
                 $request->logo,
                 $request->cover,
-                $request->cliente_id,
+                $request->pi_cliente_id,
                 $request->nombre_comercial,
                 $request->alias,
                 $request->direccion,
@@ -68,12 +76,12 @@ class EmpresaController extends Controller
             $empresas_modulos = $this->crear_modulos(
                 $request->modulo_id,
                 $empresa,
-                $request->cliente_id
+                $request->pi_cliente_id
             );
 
             $cargo = $this->crear_cargo_gerente(
                 $empresa,
-                $request->cliente_id,
+                $request->pi_cliente_id,
                 $request->nombre_comercial
             );
 
@@ -81,24 +89,24 @@ class EmpresaController extends Controller
                 $request->nombre_comercial,
                 $cargo,
                 $empresa,
-                $request->cliente_id
+                $request->pi_cliente_id
             );
 
             $personal = $this->crear_registro_gerente(
                 $user,
                 $cargo,
                 $empresa,
-                $request->cliente_id
+                $request->pi_cliente_id
             );
 
             $plan_cuenta = $this->crear_plan_cuentas(
                 $empresa,
-                $request->cliente_id
+                $request->pi_cliente_id
             );
 
-            return redirect()->route('empresas.index',$request->cliente_id)->with('success_message', 'Se agregó una empresa correctamente.');
+            return redirect()->route('empresas.index',$request->pi_cliente_id)->with('success_message', 'Se agregó una empresa correctamente.');
         } catch (ValidationException $e) {
-            return redirect()->route('empresas.create',$request->cliente_id)
+            return redirect()->route('empresas.create',$request->pi_cliente_id)
                 ->withErrors($e->validator->errors())
                 ->withInput();
         }finally{
@@ -107,12 +115,12 @@ class EmpresaController extends Controller
         }
     }
 
-    public function crear_empresa($logo,$cover,$cliente_id,$nombre_comercial,$alias,$direccion,$telefono)
+    public function crear_empresa($logo,$cover,$pi_cliente_id,$nombre_comercial,$alias,$direccion,$telefono)
     {
         $logo = isset($logo) ? 'logo.'.pathinfo($logo->getClientOriginalName(), PATHINFO_EXTENSION) : null;
         $cover = isset($cover) ? 'cover.'.pathinfo($cover->getClientOriginalName(), PATHINFO_EXTENSION) : null;
         $empresa = Empresa::create([
-            'cliente_id' => $cliente_id,
+            'pi_cliente_id' => $pi_cliente_id,
             'nombre_comercial' => $nombre_comercial,
             'alias' => $alias,
             'url_logo' => $logo,
@@ -134,13 +142,13 @@ class EmpresaController extends Controller
         return $empresa;
     }
 
-    public function crear_modulos($modulo_id,$empresa,$cliente_id)
+    public function crear_modulos($modulo_id,$empresa,$pi_cliente_id)
     {
         $cont = 0;
         while($cont < count($modulo_id)){
             $empresa_modulo = EmpresaModulo::create([
                 'empresa_id' => $empresa->id,
-                'cliente_id' => $cliente_id,
+                'pi_cliente_id' => $pi_cliente_id,
                 'modulo_id' => $modulo_id[$cont],
                 'fecha_registro' => date('Y-m-d'),
                 'estado' => '1'
@@ -152,11 +160,11 @@ class EmpresaController extends Controller
         return $empresa_modulo;
     }
 
-    public function crear_cargo_gerente($empresa,$cliente_id,$nombre_comercial)
+    public function crear_cargo_gerente($empresa,$pi_cliente_id,$nombre_comercial)
     {
         $cargo = Cargo::create([
             'empresa_id' => $empresa->id,
-            'cliente_id' => $cliente_id,
+            'pi_cliente_id' => $pi_cliente_id,
             'plan_cuenta_id'=> null,
             'nombre' => 'GERENTE GENERAL',
             'codigo' => '1',
@@ -172,14 +180,14 @@ class EmpresaController extends Controller
         return $cargo;
     }
 
-    public function crear_usuario_gerente($nombre_comercial,$cargo,$empresa,$cliente_id)
+    public function crear_usuario_gerente($nombre_comercial,$cargo,$empresa,$pi_cliente_id)
     {
         $username = substr($nombre_comercial, 0, 5);
         $username_minus = strtolower($username);
         $user = User::create([
             'cargo_id' => $cargo->id,
             'empresa_id' => $empresa->id,
-            'cliente_id' => $cliente_id,
+            'pi_cliente_id' => $pi_cliente_id,
             'name' => $nombre_comercial,
             'username' => $username_minus,
             'password' => bcrypt('123456'),
@@ -189,13 +197,13 @@ class EmpresaController extends Controller
         return $user;
     }
 
-    public function crear_registro_gerente($user,$cargo,$empresa,$cliente_id)
+    public function crear_registro_gerente($user,$cargo,$empresa,$pi_cliente_id)
     {
         $personal = Personal::create([
             'user_id' => $user->id,
             'cargo_id' => $cargo->id,
             'empresa_id' => $empresa->id,
-            'cliente_id' => $cliente_id,
+            'pi_cliente_id' => $pi_cliente_id,
             'estado' => '1'
         ]);
 
@@ -209,7 +217,7 @@ class EmpresaController extends Controller
             'user_id' => $user->id,
             'cargo_id' => $cargo->id,
             'empresa_id' => $empresa->id,
-            'cliente_id' => $cliente_id,
+            'pi_cliente_id' => $pi_cliente_id,
             'horario_id' => NULL,
             'codigo_ingreso' => $codigo_ingreso,
             'biometrico_id' => NULL,
@@ -224,14 +232,14 @@ class EmpresaController extends Controller
         return $personal;
     }
 
-    public function crear_plan_cuentas($empresa,$cliente_id)
+    public function crear_plan_cuentas($empresa,$pi_cliente_id)
     {
         $cuentas = PlanCuenta::CUENTAS;
         $cont = 1;
         while($cont <= count($cuentas)){
             $plan_de_cuenta = PlanCuenta::create([
                 'empresa_id' => $empresa->id,
-                'cliente_id' => $cliente_id,
+                'pi_cliente_id' => $pi_cliente_id,
                 'moneda_id' => 2,
                 'pais_id' => 1,
                 'nombre' => $cuentas[$cont],
@@ -253,7 +261,7 @@ class EmpresaController extends Controller
     public function editar($empresa_id)
     {
         $empresa_cliente = Empresa::find($empresa_id);
-        $cliente = Cliente::find($empresa_cliente->cliente_id);
+        $cliente = PiCliente::find($empresa_cliente->pi_cliente_id);
         $modulos = Modulo::where('estado','1')->pluck('nombre','id');
         $modulos_empresas = EmpresaModulo::where('empresa_id',$empresa_id)->get();
         return view('empresas.editar', compact('empresa_cliente','cliente','modulos','modulos_empresas'));
@@ -262,7 +270,7 @@ class EmpresaController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'nombre_comercial' => 'required|unique:empresas,nombre_comercial,' . $request->empresa_id . ',id,cliente_id,' . $request->cliente_id,
+            'nombre_comercial' => 'required|unique:empresas,nombre_comercial,' . $request->empresa_id . ',id,pi_cliente_id,' . $request->pi_cliente_id,
             'direccion' => 'required',
             'logo' => 'nullable|file|mimes:png,jpg,jpeg|max:2048',
             'cover' => 'nullable|file|mimes:png,jpg,jpeg|max:2048'
@@ -272,7 +280,7 @@ class EmpresaController extends Controller
             $cover = isset($request->cover) ? 'cover.'.pathinfo($request->cover->getClientOriginalName(), PATHINFO_EXTENSION) : null;
             $empresa = Empresa::find($request->empresa_id);
             $datos = [
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'nombre_comercial' => $request->nombre_comercial,
                 'direccion' => $request->direccion,
                 'telefono' => $request->telefono,
@@ -284,7 +292,7 @@ class EmpresaController extends Controller
                 while($cont < count($request->modulo_id)){
                     $empresa_modulo = EmpresaModulo::create([
                         'empresa_id' => $empresa->id,
-                        'cliente_id' => $request->cliente_id,
+                        'pi_cliente_id' => $request->pi_cliente_id,
                         'modulo_id' => $request->modulo_id[$cont],
                         'fecha_registro' => date('Y-m-d'),
                         'estado' => '1'
@@ -308,9 +316,9 @@ class EmpresaController extends Controller
 
             $logo = isset($request->logo) ? $request->logo->move(public_path('uploads/empresas/' . $empresa->id . '/logos/'), $logo) : null;
             $cover = isset($request->cover) ? $request->cover->move(public_path('uploads/empresas/' . $empresa->id . '/logos/'), $cover) : null;
-            return redirect()->route('empresas.index',$request->cliente_id)->with('success_message', 'Se modifico una empresa correctamente.');
+            return redirect()->route('empresas.index',$request->pi_cliente_id)->with('success_message', 'Se modifico una empresa correctamente.');
         } catch (ValidationException $e) {
-            return redirect()->route('empresas.update',$request->cliente_id)
+            return redirect()->route('empresas.update',$request->pi_cliente_id)
                 ->withErrors($e->validator->errors())
                 ->withInput();
         }

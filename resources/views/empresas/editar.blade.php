@@ -155,7 +155,7 @@
         }
 
         function cancelar(){
-            var id = $("#cliente_id").val();
+            var id = $("#pi_cliente_id").val();
             var url = "{{ route('empresas.index',':id') }}";
             url = url.replace(':id',id);
             window.location.href = url;

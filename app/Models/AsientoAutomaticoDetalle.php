@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\AsientoAutomatico;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Modulo;
 use App\Models\PlanCuenta;
 use App\Models\Moneda;
@@ -21,7 +21,7 @@ class AsientoAutomaticoDetalle extends Model
     protected $fillable = [
         'asiento_automatico_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'modulo_id',
         'plan_cuenta_id',
         'moneda_id',
@@ -77,7 +77,7 @@ class AsientoAutomaticoDetalle extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function modulo(){

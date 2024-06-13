@@ -3,6 +3,7 @@
         <table id="table-precios" class="table display responsive table-striped hover-orange">
             <thead>
                 <tr class="font-roboto-12">
+                    <td class="text-left p-1"><b>EMPRESA</b></td>
                     <td class="text-left p-1"><b>TIPO</b></td>
                     <td class="text-left p-1"><b>DETALLE</b></td>
                     <td class="text-center p-1"><b>ESTADO</b></td>
@@ -14,6 +15,7 @@
             <tbody>
                 @foreach ($configuraciones as $datos)
                     <tr class="font-roboto-11">
+                        <td class="text-left p-1">{{ $datos->empresa->nombre_comercial }}</td>
                         <td class="text-left p-1">{{ $datos->tipos }}</td>
                         <td class="text-left p-1">{{ $datos->detalle }}</td>
                         <td class="text-center p-1" width="150px">

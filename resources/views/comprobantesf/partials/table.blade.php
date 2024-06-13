@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display responsive table-striped hover-orange">
             <thead>
-                <tr class="font-roboto-12 bg-warning text-white">
+                <tr class="font-roboto-11 bg-warning text-white">
                     <td class="text-left p-1"><b>FECHA</b></td>
                     <td class="text-left p-1"><b>NRO. COMPROBANTE</b></td>
                     <td class="text-left p-1"><b>CONCEPTO</b></td>
@@ -16,8 +16,8 @@
             </thead>
             <tbody>
                 @foreach ($comprobantes as $datos)
-                    <tr class="font-roboto-12">
-                        <td class="text-left p-1">{{ \Carbon\Carbon::parse($datos->fecha)->format('d/m/Y') }}</td>
+                    <tr class="font-roboto-11">
+                        <td class="text-left p-1">{{ \Carbon\Carbon::parse($datos->fecha)->format('d-m-y') }}</td>
                         <td class="text-left p-1">{{ $datos->nro_comprobante }}</td>
                         <td class="text-left p-1">{{ $datos->concepto }}</td>
                         <td class="text-center p-1">{{ $datos->empresa->alias }}</td>
@@ -73,7 +73,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="row font-roboto-12">
+        <div class="row font-roboto-11">
             <div class="col-md-6">
                 <p class="text- muted">Mostrando
                     <strong>{{$comprobantes->count()}}</strong> registros de

@@ -1,8 +1,9 @@
 <div class="form-group row abs-center">
-    <div class="col-md-8">
+    <div class="col-md-8 px-1">
         <table class="table display responsive table-striped hover-orange">
             <thead>
-                <tr class="font-roboto-12 bg-secondary text-white">
+                <tr class="font-roboto-11 bg-secondary text-white">
+                    <td class="text-center p-1"><b>EMPRESA</b></td>
                     <td class="text-center p-1"><b>MODULO</b></td>
                     <td class="text-center p-1"><b>NOMBRE DEL ASIENTO AUTOMATICO</b></td>
                     <td class="text-center p-1"><b>ESTADO</b></td>
@@ -13,7 +14,8 @@
             </thead>
             <tbody>
                 @foreach ($asientos_automaticos as $datos)
-                    <tr class="font-roboto-12">
+                    <tr class="font-roboto-11">
+                        <td class="text-center p-1">{{ $datos->empresa->nombre_comercial }}</td>
                         <td class="text-center p-1">{{ $datos->modulo->nombre }}</td>
                         <td class="text-left p-1">{{ $datos->nombre }}</td>
                         <td class="text-center p-1">
@@ -70,7 +72,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="row font-roboto-12">
+        <div class="row font-roboto-11">
             <div class="col-md-6">
                 <p class="text- muted">Mostrando
                     <strong>{{$asientos_automaticos->count()}}</strong> registros de

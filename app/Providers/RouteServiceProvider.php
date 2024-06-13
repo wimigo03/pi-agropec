@@ -57,148 +57,53 @@ class RouteServiceProvider extends ServiceProvider
 
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/web.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/balance-general-f-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/balance-general-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/libro-mayor-cuenta-general-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/libro-mayor-cuenta-general-f-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/libro-mayor-auxiliar-general-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/libro-mayor-auxiliar-general-f-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/estado-resultado-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/estado-resultado-f-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/configuracion-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/inicio-mes-fiscal-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/clientes-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/users-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/cargos-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/categorias-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/productos-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/unidades-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/personal-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/horarios-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/sucursal-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/empresas-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/roles-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/permissions-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/plan-cuentas-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/plan-cuentas-auxiliar-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/zonas-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/mesas-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/precio-productos-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/tipo-precios-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/tipo-cambio-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/asiento-automatico-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/caja-venta-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/comprobantes-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/comprobantesf-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/balance-apertura-route.php'));
-
-        Route::middleware('web')
-            ->namespace($this->namespace)
-            ->group(base_path('routes/balance-apertura-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/web.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/balance-general-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/balance-general-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-cuenta-general-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-cuenta-general-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-auxiliar-general-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-auxiliar-general-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-cuenta-y-auxiliar-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-cuenta-y-auxiliar-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-cuenta-1-99-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-cuenta-1-99-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-sumas-y-saldos-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-sumas-y-saldos-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-centro-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-centro-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-centro-cuenta-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/libro-mayor-centro-cuenta-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/estado-resultado-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/estado-resultado-f-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/configuracion-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/inicio-mes-fiscal-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/pi-clientes-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/users-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/cargos-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/categorias-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/productos-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/unidades-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/personal-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/horarios-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/sucursal-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/empresas-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/roles-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/permissions-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/plan-cuentas-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/centros-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/sub-centros-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/plan-cuentas-auxiliar-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/zonas-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/mesas-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/precio-productos-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/tipo-precios-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/tipo-cambio-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/asiento-automatico-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/caja-venta-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/comprobantes-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/comprobantesf-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/balance-apertura-route.php'));
+        Route::middleware('web')->namespace($this->namespace)->group(base_path('routes/balance-apertura-f-route.php'));
     }
 }

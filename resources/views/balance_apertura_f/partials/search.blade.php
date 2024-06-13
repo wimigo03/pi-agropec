@@ -2,13 +2,12 @@
 
 </form>
 <div class="form-group row">
-    <div class="col-md-6 px-0 pr-1">
-        <input type="hidden" name="empresa_id" value="{{ $empresa->id }}" id="empresa_id">
+    <div class="col-md-12 px-1">
         @can('balance.apertura.index')
             <span class="tts:right tts-slideIn tts-custom" aria-label="Cambiar" style="cursor: pointer;">
-                <button class="btn btn-outline-secondary font-roboto-12" type="button" onclick="cambiari();">
+                <span class="btn btn-outline-secondary font-roboto-12" onclick="cambiari();">
                     <i class="fa-solid fa-file-invoice-dollar fa-fw"></i>
-                </button>
+                </span>
             </span>
         @endcan
         <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>

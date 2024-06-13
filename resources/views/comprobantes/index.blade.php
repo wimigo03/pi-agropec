@@ -2,34 +2,6 @@
 @extends('layouts.dashboard')
 @section('content')
     @include('comprobantes.partials.search')
-    <div class="form-group row">
-        <div class="col-md-6 px-0 pr-1">
-            @can('comprobantef.index')
-                <span class="tts:right tts-slideIn tts-custom" aria-label="Comprobantes" style="cursor: pointer;">
-                    <button class="btn btn-outline-warning font-verdana" type="button" onclick="comprobantesf();">
-                        <i class="fa-solid fa-file-invoice-dollar fa-fw"></i>
-                    </button>
-                </span>
-            @endcan
-            @can('comprobante.create')
-                <span class="tts:right tts-slideIn tts-custom" aria-label="Crear Comprobante" style="cursor: pointer;">
-                    <button class="btn btn-outline-success font-verdana" type="button" onclick="create();">
-                        <i class="fas fa-plus fa-fw"></i>
-                    </button>
-                </span>
-            @endcan
-            <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-        <div class="col-md-6 px-0 pl-1 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="search();">
-                &nbsp;<i class="fas fa-search"></i>&nbsp;Buscar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="limpiar();">
-                &nbsp;<i class="fas fa-eraser"></i>&nbsp;Limpiar
-            </button>
-            <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
     @include('comprobantes.partials.table')
 @endsection
 @section('scripts')
@@ -37,6 +9,12 @@
     @include('layouts.notificaciones')
     <script>
         $(document).ready(function() {
+            $('#empresa_id').select2({
+                theme: "bootstrap4",
+                placeholder: "--Empresa--",
+                width: '100%'
+            });
+
             $('#tipo').select2({
                 theme: "bootstrap4",
                 placeholder: "--Tipo--",
@@ -55,18 +33,202 @@
                 width: '100%'
             });
 
+            $('#user_id').select2({
+                theme: "bootstrap4",
+                placeholder: "--Creado por--",
+                width: '100%'
+            });
+
+            var cleave = new Cleave('#fecha_i', {
+                date: true,
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
+            });
+
+            var cleave = new Cleave('#fecha_f', {
+                date: true,
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
+            });
+
             $("#fecha_i").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
 
             $("#fecha_f").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
+
+            $('#user_id').on('select2:open', function(e) {
+                if($("#empresa_id >option:selected").val() == ""){
+                    Modal("Para continuar se debe seleccionar una <b>[EMPRESA]</b>.");
+                }
+            });
+
+            if($("#empresa_id >option:selected").val() != ''){
+                var id = $("#empresa_id >option:selected").val();
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                getUsuarios(id,CSRF_TOKEN);
+            }
+
+            $('#dataTable').DataTable({
+                bFilter: true,
+                responsive: true,
+                processing: true,
+                serverSide: true,
+                autoWidth: false,
+                ajax: "{{ route('comprobante.index') }}",
+                columns: [
+                    {
+                        data: 'empresa',
+                        name: 'b.alias',
+                        class: 'text-center p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'tipos',
+                        name: 'tipos',
+                        class: 'text-center p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'fecha',
+                        name: 'fecha',
+                        class: 'text-center p-1 font-roboto-11',
+                        render: function(data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                var dateParts = data.split("-");
+                                var year = dateParts[0].slice(-2);
+                                var month = dateParts[1];
+                                var day = dateParts[2];
+                                return day + '-' + month + '-' + year;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'nro_comprobante',
+                        name: 'a.nro_comprobante',
+                        class: 'text-center p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'creado',
+                        name: 'creado',
+                        class: 'text-center p-1 font-roboto-11',
+                        render: function(data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                var dateParts = data.split("-");
+                                var year = dateParts[0].slice(-2);
+                                var month = dateParts[1];
+                                var day = dateParts[2];
+                                return day + '-' + month + '-' + year;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'concepto',
+                        name: 'a.concepto',
+                        class: 'text-justify p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'monto',
+                        name: 'a.monto',
+                        class: 'text-justify p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'status',
+                        name: 'status',
+                        class: 'text-center p-1 font-roboto-11',
+                        render: function(data, type, row){
+                            if(row.status === 'PENDIENTE'){
+                                return '<span class="badge-with-padding badge badge-secondary">PENDIENTE</span>';
+                            }else if(row.status == 'APROBADO'){
+                                return '<span class="badge-with-padding badge badge-success">APROBADO</span>';
+                            }else if(row.status == 'ANULADO'){
+                                return '<span class="badge-with-padding badge badge-danger">ANULADO</span>';
+                            }else if(row.status == 'ELIMINADO'){
+                                return '<span class="badge-with-padding badge badge-danger">ELIMINADO</span>';
+                            }else{
+                                return '#';
+                            }
+                        }
+                    },
+                    {
+                        data: 'username',
+                        name: 'c.username',
+                        class: 'text-center p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'copia',
+                        name: 'copia',
+                        class: 'text-center p-1 font-roboto-11',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'bars',
+                        name: 'bars',
+                        class: 'text-center p-1 font-roboto-11',
+                        orderable: false,
+                        searchable: false
+                    },
+                ],
+                initComplete: function () {
+                    var api = this.api();
+                    var columnCount = api.columns().nodes().length;
+
+                    api.columns().every(function (index) {
+                        if (index >= columnCount - 2) {
+                            return;
+                        }
+                        var column = this;
+                        var input = document.createElement("input");
+                        input.style.width = "100%";
+                        $(input).addClass('form-control font-roboto-12').appendTo($(column.footer()).empty()).on('change', function () {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? val : '', true, false).draw();
+                        });
+                    });
+                },
+                order: [[2, 'desc']],
+                language: datatableLanguageConfig
+            });
         });
+
+        $('#empresa_id').change(function() {
+            var id = $(this).val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            getUsuarios(id,CSRF_TOKEN);
+        });
+
+        function getUsuarios(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/comprobantes/get_usuarios',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.usuarios){
+                        var arr = Object.values($.parseJSON(data.usuarios));
+                        $("#user_id").empty();
+                        var select = $("#user_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.name);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
 
         function valideNumberConDecimal(evt) {
             var code = (evt.which) ? evt.which : evt.keyCode;
@@ -124,33 +286,61 @@
             }
         });
 
+        function Modal(mensaje){
+            $("#modal-alert .modal-body").html(mensaje);
+            $('#modal-alert').modal({keyboard: false});
+        }
+
         function comprobantesf(){
-            var id = $("#empresa_id").val()
-            var url = "{{ route('comprobantef.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobantef.index') }}";
             window.location.href = url;
         }
 
         function create(){
-            var id = $("#empresa_id").val()
-            var url = "{{ route('comprobante.create',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobante.create') }}";
             window.location.href = url;
         }
 
         function search(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('comprobante.search',':id') }}";
+            var url = "{{ route('comprobante.search') }}";
             $("#form").attr('action', url);
-            url = url.replace(':id',id);
-            window.location.href = url;
             $("#form").submit();
         }
 
+        function excel() {
+            var url = "{{ route('comprobante.excel') }}";
+            $(".btn").hide();
+            $(".spinner-btn-send").show();
+            var form = $("#form");
+            var formData = form.serialize();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: formData,
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(response) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(response);
+                    a.href = url;
+                    a.download = 'comprobantes.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    $(".spinner-btn-send").hide();
+                    $(".btn").show();
+                },
+                error: function(xhr, status, error) {
+                    alert('Hubo un error al exportar el archivo: ' + xhr.responseText);
+                    $(".spinner-btn-send").hide();
+                    $(".btn").show();
+                }
+            });
+        }
+
         function limpiar(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('comprobante.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobante.index') }}";
             window.location.href = url;
         }
     </script>

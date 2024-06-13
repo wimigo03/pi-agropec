@@ -8,7 +8,7 @@ use App\Models\Personal;
 use App\Models\User;
 use App\Models\Cargo;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Afp;
 
 class PersonalContrato extends Model
@@ -22,7 +22,7 @@ class PersonalContrato extends Model
         'user_id',
         'cargo_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'plan_cuenta_id',
         'afp_id',
         'horario_id',
@@ -52,9 +52,9 @@ class PersonalContrato extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
         }
     }
@@ -76,7 +76,7 @@ class PersonalContrato extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function afp(){

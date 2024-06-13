@@ -16,7 +16,7 @@
             @csrf
             <input type="hidden" name="empresa_id" value="{{ $empresa->id }}">
             <div class="form-group row font-roboto-12">
-                <div class="col-md-2 px-0 pl-1">
+                <div class="col-md-2 px-1 pl-1">
                     <label for="tipo_cambio" class="d-inline">T. Cambio</label>
                     <input type="text" name="tipo_cambio" value="{{ $tipo_cambio->dolar_oficial }}" placeholder="0" id="tipo_cambio" class="form-control font-roboto-12" readonly>
                 </div>
@@ -33,11 +33,11 @@
                     <label for="porcentaje" class="d-inline">Max 100%</label>
                     <input type="text" name="porcentaje" value="{{ old('porcentaje') }}" placeholder="0" id="porcentaje" class="form-control font-roboto-12" onkeypress="return valideNumberConDecimal(event);">
                 </div>
-                <div class="col-md-6 px-0 pl-1 text-right">
+                <div class="col-md-6 px-1 pl-1 text-right">
                     <br>
-                    <button class="btn btn-primary font-verdana" type="button" onclick="procesar();">
+                    <span class="btn btn-primary font-roboto-12" onclick="procesar();">
                         <i class="fas fa-paper-plane fa-fw"></i>&nbsp;Actualizar
-                    </button>
+                    </span>
                 </div>
             </div>
             @include('precio_productos.partials.table')

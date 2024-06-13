@@ -23,20 +23,20 @@ class AsientoAutomaticoController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('asiento.automatico.index',Auth::user()->empresa_id);
         }
         return view('asientos_automaticos.indexAfter', compact('empresas'));
     }
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $modulos = Modulo::where('id','!=',3)->pluck('nombre','id');
         /*$plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
                                     ->where('detalle','1')
@@ -46,10 +46,10 @@ class AsientoAutomaticoController extends Controller
         $estados = AsientoAutomatico::ESTADOS;
         /*$tipos = AsientoAutomatico::TIPOS;*/
         $asientos_automaticos = AsientoAutomatico::query()
-                                                ->byEmpresa($empresa_id)
+                                                ->byPiCliente(Auth::user()->pi_cliente_id)
                                                 ->orderBy('id','desc')
                                                 ->paginate(10);
-        return view('asientos_automaticos.index', compact('icono','header','empresa','modulos','estados','asientos_automaticos'));
+        return view('asientos_automaticos.index', compact('icono','header','empresas','modulos','estados','asientos_automaticos'));
     }
 
     public function search(Request $request)
@@ -78,19 +78,42 @@ class AsientoAutomaticoController extends Controller
         return view('asientos_automaticos.index', compact('icono','header','empresa','modulos','plan_cuentas','estados','tipos','asientos_automaticos'));
     }
 
-    public function create($empresa_id)
+    public function create()
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $empresa = Empresa::find($empresa_id);
-        $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
+        /*$plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
                                         ->where('detalle','1')
                                         ->where('estado','1')
-                                        ->where('empresa_id',$empresa_id)
-                                        ->pluck('cuenta_contable','id');
+                                        ->where('pi_cliente_id',Auth::user()->pi_cliente_id)
+                                        ->pluck('cuenta_contable','id');*/
         $modulos = Modulo::where('estado','1')->where('id','!=','3')->pluck('nombre','id');
         $tipos = AsientoAutomaticoDetalle::TIPOS;
-        return view('asientos_automaticos.create', compact('icono','header','empresa','plan_cuentas','modulos','tipos'));
+        return view('asientos_automaticos.create', compact('icono','header','empresas','modulos','tipos'));
+    }
+
+    public function getPlanCuentas(Request $request){
+        try{
+            $input = $request->all();
+            $id = $input['id'];
+            $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
+                                        ->where('detalle','1')
+                                        ->where('estado','1')
+                                        ->where('empresa_id',$id)
+                                        ->orderBy('codigo','asc')
+                                        ->get()
+                                        ->toJson();
+            if($plan_cuentas){
+                return response()->json([
+                    'plan_cuentas' => $plan_cuentas
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function store(Request $request)
@@ -103,7 +126,7 @@ class AsientoAutomaticoController extends Controller
                 $empresa = Empresa::find($request->empresa_id);
                 $datos = [
                     'empresa_id' => $empresa->id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'modulo_id' => $request->modulo_id,
                     'nombre' => $request->nombre,
                     'estado' => '1',
@@ -117,7 +140,7 @@ class AsientoAutomaticoController extends Controller
                     $datos_detalle = [
                         'asiento_automatico_id' => $asiento_automatico->id,
                         'empresa_id' => $empresa->id,
-                        'cliente_id' => $empresa->cliente_id,
+                        'pi_cliente_id' => $empresa->pi_cliente_id,
                         'modulo_id' => $request->modulo_id,
                         'plan_cuenta_id' => $plan_cuenta->id,
                         'moneda_id' => $plan_cuenta->moneda_id,
@@ -207,7 +230,7 @@ class AsientoAutomaticoController extends Controller
                     $datos_detalle = [
                         'asiento_automatico_id' => $asiento_automatico->id,
                         'empresa_id' => $empresa->id,
-                        'cliente_id' => $empresa->cliente_id,
+                        'pi_cliente_id' => $empresa->pi_cliente_id,
                         'modulo_id' => $request->modulo_id,
                         'plan_cuenta_id' => $plan_cuenta->id,
                         'moneda_id' => $plan_cuenta->moneda_id,
@@ -257,7 +280,7 @@ class AsientoAutomaticoController extends Controller
                 "Mensaje: Asiento automatico habilitado con éxito" . "\n" .
                 "Usuario: " . Auth::user()->id . "\n"
             );
-            return redirect()->route('asiento.automatico.index',['empresa_id' => $asiento_automatico->empresa_id])->with('success_message', 'Se habilito un asiento automatico con exito.');
+            return redirect()->route('asiento.automatico.index')->with('success_message', 'Se habilito un asiento automatico con exito.');
         } catch (\Exception $e) {
             Log::channel('asientos_automaticos')->info(
                 "\n" .
@@ -282,7 +305,7 @@ class AsientoAutomaticoController extends Controller
                 "Mensaje: Asiento automatico deshabilitado con éxito" . "\n" .
                 "Usuario: " . Auth::user()->id . "\n"
             );
-            return redirect()->route('asiento.automatico.index',['empresa_id' => $asiento_automatico->empresa_id])->with('success_message', 'Se deshabilito un asiento automatico con exito.');
+            return redirect()->route('asiento.automatico.index')->with('success_message', 'Se deshabilito un asiento automatico con exito.');
         } catch (\Exception $e) {
             Log::channel('asientos_automaticos')->info(
                 "\n" .

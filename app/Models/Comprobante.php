@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\User;
 use App\Models\Cargo;
 use App\Models\Moneda;
@@ -19,7 +19,7 @@ class Comprobante extends Model
     protected $table = 'comprobantes';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'tipo_cambio_id',
         'user_id',
         'cargo_id',
@@ -37,7 +37,8 @@ class Comprobante extends Model
         'monto',
         'moneda',
         'copia',
-        'estado'
+        'estado',
+        'creado'
     ];
 
     const ESTADOS = [
@@ -77,12 +78,23 @@ class Comprobante extends Model
         }
     }
 
+    public function getTiposAttribute(){
+        switch ($this->tipo) {
+            case '1':
+                return "INGRESO";
+            case '2':
+                return "EGRESO";
+            case '3':
+                return "TRASPASO";
+        }
+    }
+
     public function empresa(){
         return $this->belongsTo(Empresa::class,'empresa_id','id');
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function user(){
@@ -93,6 +105,12 @@ class Comprobante extends Model
         return $this->belongsTo(Moneda::class,'moneda_id','id');
     }
 
+    public function scopeByPiCliente($query, $pi_cliente_id){
+        if($pi_cliente_id){
+            return $query->where('pi_cliente_id', $pi_cliente_id);
+        }
+    }
+
     public function scopeByEmpresa($query, $empresa_id){
         if($empresa_id)
             return $query->where('empresa_id', $empresa_id);
@@ -100,8 +118,8 @@ class Comprobante extends Model
 
     public function scopeByEntreFechas($query, $from, $to){
         if ($from && $to) {
-            $from = date('Y-m-d 00:00:00', strtotime(str_replace('/', '-', $from)));
-            $to = date('Y-m-d 23:59:59', strtotime(str_replace('/', '-', $to)));
+            $from = date('Y-m-d 00:00:00', strtotime($from));
+            $to = date('Y-m-d 23:59:59', strtotime($to));
             return $query->where(
                 'fecha','>=',Carbon::parse($from)->toDateString()
             )
@@ -132,6 +150,11 @@ class Comprobante extends Model
     public function scopeByMonto($query, $monto){
         if($monto)
             return $query->where('monto', 'like', '%' . $monto . '%');
+    }
+
+    public function scopeByCreadoPor($query, $user_id){
+        if($user_id)
+            return $query->where('user_id', $user_id);
     }
 
     public function scopeByCopia($query, $copia){

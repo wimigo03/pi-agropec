@@ -2,34 +2,6 @@
 @extends('layouts.dashboard')
 @section('content')
     @include('comprobantesf.partials.search')
-    <div class="form-group row">
-        <div class="col-md-6 px-0 pr-1">
-            @can('comprobante.index')
-                <span class="tts:right tts-slideIn tts-custom" aria-label="Comprobantes" style="cursor: pointer;">
-                    <button class="btn btn-outline-secondary font-verdana" type="button" onclick="comprobantes();">
-                        <i class="fa-solid fa-file-invoice-dollar fa-fw"></i>
-                    </button>
-                </span>
-            @endcan
-            @can('comprobantef.create')
-                <span class="tts:right tts-slideIn tts-custom" aria-label="Crear Comprobante" style="cursor: pointer;">
-                    <button class="btn btn-outline-success font-verdana" type="button" onclick="create();">
-                        <i class="fas fa-plus fa-fw"></i>
-                    </button>
-                </span>
-            @endcan
-            <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-        <div class="col-md-6 px-0 pl-1 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="search();">
-                &nbsp;<i class="fas fa-search"></i>&nbsp;Buscar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="limpiar();">
-                &nbsp;<i class="fas fa-eraser"></i>&nbsp;Limpiar
-            </button>
-            <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
     @include('comprobantesf.partials.table')
 @endsection
 @section('scripts')
@@ -37,6 +9,12 @@
     @include('layouts.notificaciones')
     <script>
         $(document).ready(function() {
+            $('#empresa_id').select2({
+                theme: "bootstrap4",
+                placeholder: "--Empresa--",
+                width: '100%'
+            });
+
             $('#tipo').select2({
                 theme: "bootstrap4",
                 placeholder: "--Tipo--",
@@ -55,15 +33,27 @@
                 width: '100%'
             });
 
+            var cleave = new Cleave('#fecha_i', {
+                date: true,
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
+            });
+
+            var cleave = new Cleave('#fecha_f', {
+                date: true,
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
+            });
+
             $("#fecha_i").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
 
             $("#fecha_f").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
         });
@@ -125,32 +115,23 @@
         });
 
         function comprobantes(){
-            var id = $("#empresa_id").val()
-            var url = "{{ route('comprobante.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobante.index') }}";
             window.location.href = url;
         }
 
         function create(){
-            var id = $("#empresa_id").val()
-            var url = "{{ route('comprobantef.create',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobantef.create') }}";
             window.location.href = url;
         }
 
         function search(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('comprobantef.search',':id') }}";
+            var url = "{{ route('comprobantef.search') }}";
             $("#form").attr('action', url);
-            url = url.replace(':id',id);
-            window.location.href = url;
             $("#form").submit();
         }
 
         function limpiar(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('comprobantef.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobantef.index') }}";
             window.location.href = url;
         }
     </script>

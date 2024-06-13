@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Sucursal;
 use App\Models\Pedido;
 
@@ -17,7 +17,7 @@ class Zona extends Model
     protected $fillable = [
         'sucursal_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'codigo',
         'nombre',
         'detalle',
@@ -33,9 +33,9 @@ class Zona extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
         }
     }
@@ -70,7 +70,7 @@ class Zona extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function sucursal(){
@@ -88,7 +88,7 @@ class Zona extends Model
             return $query->where('sucursal_id', $sucursal_id);
         }
     }
-    
+
     public function scopeByCodigo($query, $codigo){
         if($codigo){
             return $query->where('codigo', $codigo);

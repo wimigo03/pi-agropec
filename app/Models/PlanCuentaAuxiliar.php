@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 
 class PlanCuentaAuxiliar extends Model
 {
@@ -14,7 +14,7 @@ class PlanCuentaAuxiliar extends Model
     protected $table = 'plan_cuentas_auxiliares';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'user_id',
         'nombre',
         'class_name',
@@ -56,7 +56,13 @@ class PlanCuentaAuxiliar extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
+    }
+
+    public function scopeByPiCliente($query, $pi_cliente_id){
+        if($pi_cliente_id){
+            return $query->where('pi_cliente_id', $pi_cliente_id);
+        }
     }
 
     public function scopeByEmpresa($query, $empresa_id){

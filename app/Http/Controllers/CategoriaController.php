@@ -21,9 +21,7 @@ class CategoriaController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('categorias.index',['empresa_id' => Auth::user()->empresa_id, 'status_platos' => '[]', 'status_insumos' => '[]']);
         }
@@ -37,9 +35,7 @@ class CategoriaController extends Controller
         $estado_platos = $status_platos == 1 ? ['1'] : ['1','2'];
         $estado_insumos = $status_insumos == 1 ? ['1'] : ['1','2'];
         $empresa = Empresa::find($empresa_id);
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         $categorias_platos = Categoria::where('empresa_id',$empresa_id)->whereIn('estado',$estado_platos)->where('tipo','1')->get();
         $categorias_insumos = Categoria::where('empresa_id',$empresa_id)->whereIn('estado',$estado_insumos)->where('tipo','2')->get();
         $tree = $categorias_platos != null ? $this->buildTree($categorias_platos) : null;
@@ -129,7 +125,7 @@ class CategoriaController extends Controller
             $plan_cuenta = PlanCuenta::find($request->plan_cuenta_id);
             $categoria = Categoria::create([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'plan_cuenta_id' => $request->plan_cuenta_id,
                 'moneda_id' => $plan_cuenta != null ? $plan_cuenta->moneda_id : null,
                 'pais_id' => $plan_cuenta != null ? $plan_cuenta->pais_id : null,
@@ -175,7 +171,7 @@ class CategoriaController extends Controller
             $categoria = Categoria::find($request->categoria_id);
             $categoria->update([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'nombre' => $request->categoria,
                 'codigo' => $request->codigo,
                 'parent_id' => $request->parent_id,
@@ -215,7 +211,7 @@ class CategoriaController extends Controller
             $plan_cuenta = PlanCuenta::find($request->plan_cuenta_id);
             $categoria = Categoria::create([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'plan_cuenta_id' => $request->plan_cuenta_id,
                 'moneda_id' => $plan_cuenta != null ? $plan_cuenta->moneda_id : null,
                 'pais_id' => $plan_cuenta != null ? $plan_cuenta->pais_id : null,

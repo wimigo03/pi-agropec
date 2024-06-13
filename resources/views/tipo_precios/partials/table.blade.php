@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12 abs-center">
+    <div class="col-md-12 px-1 abs-center">
         <table class="table display responsive table-striped" style="width:50%;">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-left p-1"><b>ID</b></td>
                     <td class="text-left p-1"><b>TIPO</b></td>
                     <td class="text-center p-1"><b>ESTADO</b></td>
@@ -44,7 +44,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="d-flex justify-content-end font-roboto-12">
+        <div class="d-flex justify-content-end font-roboto-11">
             {!! $tipos_precio->links() !!}
         </div>
     </div>

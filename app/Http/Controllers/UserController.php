@@ -18,9 +18,7 @@ class UserController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('user.index',Auth::user()->empresa_id);
         }
@@ -80,7 +78,7 @@ class UserController extends Controller
                 $user->update([
                     'cargo_id' => $request->cargo_id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $request->cliente_id,
+                    'pi_cliente_id' => $request->pi_cliente_id,
                     'name' => $request->nombre,
                     'email' => $request->email,
                     'password' => bcrypt($request->password)
@@ -89,7 +87,7 @@ class UserController extends Controller
                 $user->update([
                     'cargo_id' => $request->cargo_id,
                     'empresa_id' => $request->empresa_id,
-                    'cliente_id' => $request->cliente_id,
+                    'pi_cliente_id' => $request->pi_cliente_id,
                     'name' => $request->nombre,
                     'email' => $request->email
                 ]);
@@ -149,7 +147,7 @@ class UserController extends Controller
             foreach ($request->roles as $roleId) {
                 $user->roles()->updateExistingPivot($roleId, [
                     'empresa_id' => $user->empresa_id,
-                    'cliente_id' => $user->cliente_id,
+                    'pi_cliente_id' => $user->pi_cliente_id,
                     'cargo_id' => $user->cargo_id
                 ]);
             }

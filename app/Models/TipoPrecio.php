@@ -12,7 +12,7 @@ class TipoPrecio extends Model
     protected $table = 'tipo_precios';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'nombre',
         'observaciones',
         'estado'
@@ -25,9 +25,9 @@ class TipoPrecio extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
         }
     }

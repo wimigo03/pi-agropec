@@ -20,19 +20,24 @@ class BalanceGeneralFController extends Controller
     const ICONO = 'fa-solid fa-tag fa-fw';
     const INDEX = 'BALANCE GENERAL';
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $show = '0';
-        return view('balance_general_f.index', compact('icono','header','empresa','show'));
+        return view('balance_general_f.index', compact('icono','header','empresas','show'));
     }
 
     public function search(Request $request)
     {
         $icono = self::ICONO;
         $header = self::INDEX;
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $fecha_i = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_i)));
         $fecha_f = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_f)));
 
@@ -57,7 +62,7 @@ class BalanceGeneralFController extends Controller
                 $total = $estado_resultado['total'];
                 $totales = $estado_resultado['totales'];
                 $show = '1';
-                return view('balance_general_f.index', compact('icono','header','empresa','ingresos','costos','gastos','nroMaxColumna','total','totales','show'));
+                return view('balance_general_f.index', compact('icono','header','empresas','empresa','ingresos','costos','gastos','nroMaxColumna','total','totales','show'));
         } finally{
             ini_restore('memory_limit');
             ini_restore('max_execution_time');
@@ -108,7 +113,7 @@ class BalanceGeneralFController extends Controller
                                                     ->whereBetween('c.fecha',[$start_date,$end_date])
                                                     ->where('c.empresa_id',$empresa_id)
                                                     ->whereIn('c.estado',$status)
-                                                    ->where('comprobante_detalles.estado','1')
+                                                    ->where('comprobantef_detalles.estado','1')
                                                     ->select('c.id',
                                                                 'c.fecha',
                                                                 'comprobantef_detalles.plan_cuenta_id',

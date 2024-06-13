@@ -19,17 +19,6 @@
 </style>
 @section('content')
     @include('comprobantes.partials.form-create')
-    <div class="form-group row">
-        <div class="col-md-12 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent
@@ -73,9 +62,36 @@
                 width: '100%'
             });
 
+            $('#centro_id').on('select2:open', function(e) {
+                if($("#empresa_id >option:selected").val() == ""){
+                    alert("Para continuar se debe seleccionar una <b>[EMPRESA]</b>.");
+                }
+            });
+
+            $('#sub_centro_id').on('select2:open', function(e) {
+                if($("#empresa_id >option:selected").val() == ""){
+                    alert("Para continuar se debe seleccionar una <b>[EMPRESA]</b>.");
+                }
+                if($("#centro_id >option:selected").val() == ""){
+                    alert("Para continuar se debe seleccionar un <b>[CENTRO]</b>.");
+                }
+            });
+
+            $('#plan_cuenta_id').on('select2:open', function(e) {
+                if($("#empresa_id >option:selected").val() == ""){
+                    alert("Para continuar se debe seleccionar una <b>[EMPRESA]</b>.");
+                }
+            });
+
+            var cleave = new Cleave('#fecha', {
+                date: true,
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
+            });
+
             $("#fecha").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
 
@@ -95,6 +111,22 @@
             }
 
             obligatorio();
+
+            if($("#empresa_id >option:selected").val() != ''){
+                var id = $("#empresa_id >option:selected").val();
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                getCentros(id,CSRF_TOKEN);
+                getPlanCuentas(id,CSRF_TOKEN);
+                getPlanCuentasAuxiliares(id,CSRF_TOKEN);
+            }
+
+            if($("#centro_id >option:selected").val() != ''){
+                if (!$("#centro_id").length) {
+                    var id = $("#centro_id >option:selected").val();
+                    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                    getSubCentros(id,CSRF_TOKEN);
+                }
+            }
         });
 
         $('#tipo').on('change', function() {
@@ -212,7 +244,7 @@
             var table = document.getElementById("tabla_comprobante_detalle");
             var suma_debe = 0;
             for (var i = 1; i < table.rows.length - 1; i++) {
-                var debe_cleave = table.rows[i].cells[5].textContent;
+                var debe_cleave = table.rows[i].cells[6].textContent;
                 var debe = parseFloat(debe_cleave.replace(/,/g, ''));
                 if (!isNaN(debe)) {
                     suma_debe += debe;
@@ -228,7 +260,7 @@
             var table = document.getElementById("tabla_comprobante_detalle");
             var suma_haber = 0;
             for (var i = 1; i < table.rows.length - 1; i++) {
-                var haber_cleave = table.rows[i].cells[6].textContent;
+                var haber_cleave = table.rows[i].cells[7].textContent;
                 var haber = parseFloat(haber_cleave.replace(/,/g, ''));
                 if (!isNaN(haber)) {
                     suma_haber += haber;
@@ -237,28 +269,6 @@
             document.getElementById("total_haber").textContent = formatNumberWithThousandsSeparator(suma_haber);
             return suma_haber.toFixed(2);
         }
-
-        /*function redondear_debe(){
-            var input_debe = document.getElementById("debe");
-            input_debe.addEventListener("input", function() {
-                var valor = this.value;
-                var decimales = valor.split(".");
-                if (decimales.length > 1 && decimales[1].length > 2) {
-                    this.value = decimales[0] + "." + decimales[1].slice(0, 2);
-                }
-            });
-        }*/
-
-        /*function redondear_haber(){
-            var input_haber = document.getElementById("haber");
-            input_haber.addEventListener("input", function() {
-                var valor = this.value;
-                var decimales = valor.split(".");
-                if (decimales.length > 1 && decimales[1].length > 2) {
-                    this.value = decimales[0] + "." + decimales[1].slice(0, 2);
-                }
-            });
-        }*/
 
         $('#debe').on('input', function () {
             procesar_debe();
@@ -314,15 +324,139 @@
             cargar_comprobante_detalle();
         }
 
+        $('#empresa_id').change(function() {
+            var id = $(this).val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            getCentros(id,CSRF_TOKEN);
+            getPlanCuentas(id,CSRF_TOKEN);
+            getPlanCuentasAuxiliares(id,CSRF_TOKEN);
+        });
+
+        function getCentros(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/comprobantes/get_centros',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.centros){
+                        var arr = Object.values($.parseJSON(data.centros));
+                        $("#centro_id").empty();
+                        $("#sub_centro_id").empty();
+                        var select = $("#centro_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.nombre);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function getPlanCuentas(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/comprobantes/get_plancuentas',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.plan_cuentas){
+                        var arr = Object.values($.parseJSON(data.plan_cuentas));
+                        $("#plan_cuenta_id").empty();
+                        var select = $("#plan_cuenta_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.cuenta_contable);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        function getPlanCuentasAuxiliares(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/comprobantes/get_plancuentasauxiliares',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.plan_cuentas_auxiliares){
+                        var arr = Object.values($.parseJSON(data.plan_cuentas_auxiliares));
+                        $("#auxiliar_id").empty();
+                        var select = $("#auxiliar_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.nombre);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
+        $('#centro_id').change(function() {
+            var id = $(this).val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            getSubCentros(id,CSRF_TOKEN);
+        });
+
+        function getSubCentros(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/comprobantes/get_subcentros',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.subcentros){
+                        var arr = Object.values($.parseJSON(data.subcentros));
+                        $("#sub_centro_id").empty();
+                        var select = $("#sub_centro_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.nombre);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
         function cargar_comprobante_detalle(){
             var table = document.getElementById("tabla_comprobante_detalle");
             var rowCount = table.rows.length - 1;
-            var centro_contable_id = $("#centro_contable_id >option:selected").val();
-            var centro_contable = $("#centro_contable_id >option:selected").text();
+            var centro_id = $("#centro_id >option:selected").val();
+            var centro = $("#centro_id >option:selected").text();
+            var sub_centro_id = $("#sub_centro_id >option:selected").val();
+            var sub_centro = $("#sub_centro_id >option:selected").text();
             var plan_cuenta_id = $("#plan_cuenta_id >option:selected").val();
             var plan_cuenta = $("#plan_cuenta_id >option:selected").text();
             var auxiliar_id = $("#auxiliar_id >option:selected").val();
             var auxiliar = $("#auxiliar_id >option:selected").text();
+            if(auxiliar === '--Seleccionar--'){
+                auxiliar = '';
+            }
             var debe = $("#debe").val() != '' ? $("#debe").val() : 0;
             var haber = $("#haber").val() != '' ? $("#haber").val() : 0;
             var glosa = $("#glosa").val();
@@ -331,12 +465,16 @@
                                     rowCount +
                             "</td>"+
                             "<td class='text-left p-1'>"+
-                                "<input type='hidden' name='centro_contable_id[]' value='" + centro_contable_id + "'>" +
-                                    centro_contable +
-                            "</td>"+
-                            "<td class='text-left p-1'>"+
                                 "<input type='hidden' name='plan_cuenta_id[]' value='" + plan_cuenta_id + "'>" +
                                     plan_cuenta +
+                            "</td>"+
+                            "<td class='text-left p-1'>"+
+                                "<input type='hidden' name='centro_id[]' value='" + centro_id + "'>" +
+                                    centro +
+                            "</td>"+
+                            "<td class='text-left p-1'>"+
+                                "<input type='hidden' name='sub_centro_id[]' value='" + sub_centro_id + "'>" +
+                                    sub_centro +
                             "</td>"+
                             "<td class='text-left p-1'>"+
                                 "<input type='hidden' name='auxiliar_id[]' value='" + auxiliar_id + "'>" +
@@ -363,9 +501,10 @@
 
             $("#tabla_comprobante_detalle").append(fila);
             document.getElementById("tfoot").style.display = "table-footer-group";
-            $('#centro_contable_id').val('').trigger('change');
             $('#plan_cuenta_id').val('').trigger('change');
             $('#auxiliar_id').val('').trigger('change');
+            $(".tiene-auxiliar").hide();
+            $(".no-tiene-auxiliar").show();
             document.getElementById('debe').value = '';
             document.getElementById('haber').value = '';
             document.getElementById('debe_sus').value = '';
@@ -373,6 +512,7 @@
             document.getElementById('glosa').value = '';
             sumar_debe();
             sumar_haber();
+            contar_registros();
         }
 
         function eliminarItem(thiss){
@@ -380,11 +520,17 @@
             tr.remove();
             sumar_debe();
             sumar_haber();
+            contar_registros();
         }
 
         function validar_detalle(){
-            if($("#centro_contable_id >option:selected").val() == ""){
+            if($("#centro_id >option:selected").val() == ""){
                 alert("El campo de seleccion <b>[CENTRO CONTABLE]</b> es un dato obligatorio...");
+                return false;
+            }
+
+            if($("#sub_centro_id >option:selected").val() == ""){
+                alert("El campo de seleccion <b>[SUB CENTRO CONTABLE]</b> es un dato obligatorio...");
                 return false;
             }
 
@@ -428,6 +574,16 @@
             })
         }
 
+        function contar_registros(){
+            var table = document.getElementById("tabla_comprobante_detalle");
+            var registros = table.rows.length - 2;
+            if(registros === 0){
+                $("#empresa_id").prop('disabled', false);
+            }else{
+                $("#empresa_id").prop('disabled', true);
+            }
+        }
+
         function verificar_saldo(){
             var table = document.getElementById("tabla_comprobante_detalle");
             if(table.rows.length < 3){
@@ -445,6 +601,11 @@
         }
 
         function validar(){
+            if($("#empresa_id >option:selected").val() == ""){
+                alert("La <b>[EMPRESA]</b> no fue seleccionado...");
+                return false;
+            }
+
             if($("#moneda_id >option:selected").val() == ""){
                 alert("La <b>[MONEDA]</b> no fue seleccionado...");
                 return false;
@@ -483,7 +644,7 @@
         function tiene_auxiliar(id){
             $.ajax({
                 type: 'GET',
-                url: '/comprobante/tiene_auxiliar/'+id,
+                url: '/comprobantes/tiene_auxiliar/'+id,
                 dataType: 'json',
                 data: {
                     id: id
@@ -504,6 +665,7 @@
         }
 
         function confirmar(){
+            $('#empresa_id').prop('disabled', false);
             var url = "{{ route('comprobante.store') }}";
             $("#form").attr('action', url);
             $(".btn").hide();

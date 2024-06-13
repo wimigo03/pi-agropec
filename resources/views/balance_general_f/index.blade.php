@@ -2,9 +2,7 @@
 @extends('layouts.dashboard')
 @section('content')
     @include('balance_general_f.partials.search')
-    @if ($show == '1')
-        @include('balance_general_f.partials.table')
-    @endif
+    @include('balance_general_f.partials.table')
 @endsection
 @section('scripts')
     @parent
@@ -25,71 +23,134 @@
 
             var cleave = new Cleave('#fecha_i', {
                 date: true,
-                datePattern: ['d', 'm', 'Y']
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
             });
 
             var cleave = new Cleave('#fecha_f', {
                 date: true,
-                datePattern: ['d', 'm', 'Y']
+                datePattern: ['d', 'm', 'Y'],
+                delimiter: '-'
             });
 
             $("#fecha_i").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
 
             $("#fecha_f").datepicker({
                 inline: false,
-                dateFormat: "dd/mm/yy",
+                dateFormat: "dd-mm-yy",
                 autoClose: true,
             });
         });
 
+        function Modal(mensaje){
+            $("#modal-alert .modal-body").html(mensaje);
+            $('#modal-alert').modal({keyboard: false});
+        }
+
+        function procesar() {
+            if(!validar()){
+                return false;
+            }
+            search();
+        }
+
+        function validar(){
+            if($("#empresa_id >option:selected").val() == ""){
+                Modal("[EMPRESA ES REQUERIDA]");
+                return false;
+            }
+            if($("#fecha_i").val() == ""){
+                Modal("[FECHA INICIAL REQUERIDA]");
+                return false;
+            }
+            if($("#fecha_f").val() == ""){
+                Modal("[FECHA FINAL REQUERIDA]");
+                return false;
+            }
+            return true;
+        }
+
         function search(){
-            $(".btn").hide();
-            $(".spinner-btn").show();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.general.f.search',':id') }}";
+            var url = "{{ route('balance.general.f.search') }}";
             $("#form").attr('action', url);
-            url = url.replace(':id',id);
-            window.location.href = url;
             $("#form").submit();
         }
 
         function limpiar(){
+            var url = "{{ route('balance.general.f.index') }}";
+            window.location.href = url;
+        }
+
+        function excel() {
+            var url = "{{ route('balance.general.f.excel') }}";
             $(".btn").hide();
-            $(".spinner-btn").show();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.general.f.index',':id') }}";
-            url = url.replace(':id',id);
-            window.location.href = url;
+            $(".spinner-btn-send").show();
+            var form = $("#form");
+            var formData = form.serialize();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: formData,
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(response) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(response);
+                    a.href = url;
+                    a.download = 'balance_general.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    $(".spinner-btn-send").hide();
+                    $(".btn").show();
+                },
+                error: function(xhr, status, error) {
+                    alert('Hubo un error al exportar el archivo: ' + xhr.responseText);
+                    $(".spinner-btn-send").hide();
+                    $(".btn").show();
+                }
+            });
         }
 
-        function excel(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.general.f.excel',':id') }}";
-            $("#form").attr('action', url);
-            url = url.replace(':id',id);
-            window.location.href = url;
-            $("#form").submit();
-        }
-
-        function pdf(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.general.f.pdf',':id') }}";
-            $("#form").attr('action', url);
-            url = url.replace(':id',id);
-            window.location.href = url;
-            $("#form").submit();
+        function pdf() {
+            var url = "{{ route('balance.general.f.pdf') }}";
+            $(".btn").hide();
+            $(".spinner-btn-send").show();
+            var form = $("#form");
+            var formData = form.serialize();
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: formData,
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function(response) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(response);
+                    a.href = url;
+                    a.download = 'balance_general.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    $(".spinner-btn-send").hide();
+                    $(".btn").show();
+                },
+                error: function(xhr, status, error) {
+                    alert('Hubo un error al exportar el archivo: ' + xhr.responseText);
+                    $(".spinner-btn-send").hide();
+                    $(".btn").show();
+                }
+            });
         }
 
         function cambiari(){
-            $(".btn").hide();
-            $(".spinner-btn").show();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.general.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('balance.general.index') }}";
             window.location.href = url;
         }
     </script>

@@ -137,15 +137,15 @@
                             </div>
                             <div class="col-md-2 pr-1 pl-1 font-verdana-bg">
                                 <label for="haber_basico_servicio" class="d-inline">Haber Basico</label>
-                                <input type="text" value="{{ $personal_contrato_interno->sueldo }}" class="form-control font-verdana-bg" readonly>
+                                <input type="text" value="{{ $personal_contrato_interno != null ? $personal_contrato_interno->sueldo : '' }}" class="form-control font-verdana-bg" readonly>
                             </div>
                             <div class="col-md-2 pr-1 pl-1 font-verdana-bg">
                                 <label for="tipo_bono_servicio" class="d-inline">Tipo Bono</label>
-                                <input type="text" value="{{ $personal_contrato_interno->tipo_bono }}" class="form-control font-verdana-bg" readonly>
+                                <input type="text" value="{{ $personal_contrato_interno != null ? $personal_contrato_interno->tipo_bono : '' }}" class="form-control font-verdana-bg" readonly>
                             </div>
                             <div class="col-md-2 pl-1 font-verdana-bg">
                                 <label for="bono_servicio" class="d-inline">Bono</label>
-                                <input type="text" value="{{ $personal_contrato_interno->bono }}" class="form-control font-verdana-bg" readonly>
+                                <input type="text" value="{{ $personal_contrato_interno != null ? $personal_contrato_interno->bono : '' }}" class="form-control font-verdana-bg" readonly>
                             </div>
                         </div>
                     </div>

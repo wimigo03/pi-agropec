@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Pi-Resto | Home</title>
     <link rel="icon" href="{{ asset('images/favicon.png') }}">
-    <link href="{{ asset('fonts/roboto.css') }}" rel="stylesheet">
-    <link href="{{ asset('fonts/poppins.css') }}" rel="stylesheet">
-    <link href="{{ asset('fonts/source.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/font-awesome_6.0/css/all.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/dashboard/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/dashboard/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/styles/font-verdana.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/select2/select2.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/select2/select2-bootstrap4.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/treeview/style.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/lobibox/lobibox.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/datepicker/datepicker.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/tooltips/tooltips.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('js/datepicker/themes/jquery-ui.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('fonts/roboto.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('fonts/poppins.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('fonts/source.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('dataTable/css/jquery.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dataTable/css/responsive.dataTables.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome_6.0/css/all.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/dashboard/bootstrap.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/dashboard/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/styles/font-verdana.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/select2/select2.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/select2/select2-bootstrap4.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/treeview/style.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/lobibox/lobibox.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/datepicker/datepicker.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/tooltips/tooltips.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('js/datepicker/themes/jquery-ui.css') }}" rel="stylesheet">
     <style>
         .linea-informacion {
             border-bottom: 1px solid #3498db;
@@ -55,10 +57,10 @@
         <div class="site-section">
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-md-12">
-                        @if (isset($empresa))
+                    <div class="col-md-11">
+                        {{--@if (isset($indexAfter))--}}
                             @include('layouts.partials.header')
-                        @endif
+                        {{--@endif--}}
                         @yield('content')
                     </div>
                 </div>
@@ -66,7 +68,11 @@
         </div>
     </main>
 
-    <script src="{{ asset('js/dashboard/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/jquery-3.5.1.js') }}"></script>
+    <script src="{{ asset('dataTable/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('dataTable/js/datatable-language.js') }}"></script>
+    {{--<script src="{{ asset('js/dashboard/jquery-3.3.1.min.js') }}"></script>--}}
     <script src="{{ asset('js/dashboard/bootstrap.min.js') }}"></script>
     <script src="{{ asset('js/dashboard/popper.min.js') }}"></script>
     <script src="{{ asset('js/dashboard/main.js') }}"></script>

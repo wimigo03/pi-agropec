@@ -30,20 +30,19 @@ class BalanceAperturaFController extends Controller
     const EDITAR = 'MODIFICAR BALANCE';
     const MODIFICAR_COMPROBANTE = 'MODIFICAR COMPROBANTE';
 
-    public function index($empresa_id)
+    public function index()
     {
-        $inicioMesFiscal = InicioMesFiscal::where('empresa_id',$empresa_id)->first();
+        /*$inicioMesFiscal = InicioMesFiscal::where('empresa_id',$empresa_id)->first();
         if($inicioMesFiscal == null){
             return redirect()->back()->with('error_message','[ERROR EN OPERACION. FALTA LA CONFIGURACION DE INICIO MES FISCAL]')->withInput();
-        }
+        }*/
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
         $balances = BalanceAperturaF::query()
-                                    ->byEmpresa($empresa_id)
+                                    ->byPiCliente(Auth::user()->pi_cliente_id)
                                     ->orderBy('id','desc')
                                     ->paginate(10);
-        return view('balance_apertura_f.index', compact('icono','header','empresa','balances'));
+        return view('balance_apertura_f.index', compact('icono','header','balances'));
     }
 
     public function search(Request $request)
@@ -103,7 +102,7 @@ class BalanceAperturaFController extends Controller
         $date =  '01/' . $inicioMesFiscal->mes . '/' . $request->anho;
         $datos_comprobante = [
             'empresa_id' => $empresa->id,
-            'cliente_id' => $empresa->cliente_id,
+            'pi_cliente_id' => $empresa->pi_cliente_id,
             'tipo_cambio_id' => $tipo_cambio->id,
             'user_id' => $user->id,
             'cargo_id' => $user->cargo_id,
@@ -124,7 +123,7 @@ class BalanceAperturaFController extends Controller
 
         $datos_balance_apertura = [
             'empresa_id' => $empresa->id,
-            'cliente_id' => $empresa->cliente_id,
+            'pi_cliente_id' => $empresa->pi_cliente_id,
             'user_id' => $user->id,
             'cargo_id' => $user->cargo_id,
             'comprobante_id' => $comprobante->id,

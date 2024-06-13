@@ -71,7 +71,7 @@ class TipoPrecioController extends Controller
             $empresa = Empresa::find($request->empresa_id);
             $datos = [
                 'empresa_id' => $empresa->id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'nombre' => $request->nombre,
                 'observaciones' => $request->observaciones,
                 'estado' => '1'
@@ -90,7 +90,7 @@ class TipoPrecioController extends Controller
                                                 ->first();
                 $datosPrecioProducto = [
                     'producto_id' => $producto->id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'empresa_id' => $empresa->id,
                     'categoria_id' => $producto->categoria_id,
                     'categoria_master_id' => $producto->categoria_master_id,

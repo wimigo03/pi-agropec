@@ -41,28 +41,25 @@
             @endforeach
         </select>
     </div>
-    <div class="col-md-3 pr-1 font-roboto-12" id="form_otro_tipo">
+    <div class="col-md-3 pr-1 pl-1 font-roboto-12" id="form_otro_tipo">
         <label for="otro_tipo_familiar_input" class="d-inline">Otro Tipo Familiar</label>
         <input type="text" value="{{ old('otro_tipo_familiar_input') }}" id="otro_tipo_familiar_input" class="form-control font-roboto-12" oninput="this.value = this.value.toUpperCase()">
     </div>
 </div>
 <div class="form-group row">
-    <div class="col-md-2">
-        &nbsp;
-    </div>
-    <div class="col-md-10 font-roboto-12 text-right">
+    <div class="col-md-12 font-roboto-12 text-right">
         <span class="tts:left tts-slideIn tts-custom" aria-label="Registrar Familiar">
-            <button type="button" class="btn btn-outline-success btn-sm" onclick="agregarFamiliar();">
-                &nbsp;<i class="fa fa-lg fa-plus-circle"></i>&nbsp;
-            </button>
+            <span class="btn btn-outline-success font-roboto-12" onclick="agregarFamiliar();">
+                <i class="fa fa-plus-circle fa-fw"></i>
+            </span>
         </span>
     </div>
 </div>
 <div class="form-group row">
-    <div class="col-md-12 table-responsive">
+    <div class="col-md-12">
         <table id="detalle_tabla" class="table display table-bordered responsive" style="width:100%;">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-left p-1"><b>FAMILIAR</b></td>
                     <td class="text-left p-1"><b>TIPO</b></td>
                     <td class="text-left p-1"><b>EDAD</b></td>

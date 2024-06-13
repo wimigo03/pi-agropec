@@ -4,12 +4,12 @@
     @include('tipo_precios.partials.menu')
     {{--@include('tipo_precios.partials.search')--}}
     <div class="form-group row">
-        <div class="col-md-12">
+        <div class="col-md-12 px-1">
             @can('tipo.precios.create')
                 <span class="tts:right tts-slideIn tts-custom" aria-label="Crear Tipo Precio" style="cursor: pointer;">
-                    <button class="btn btn-outline-success font-verdana" type="button" onclick="create();">
+                    <span class="btn btn-outline-success font-roboto-12" onclick="create();">
                         <i class="fas fa-plus fa-fw"></i>
-                    </button>
+                    </span>
                 </span>
             @endcan
             <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>

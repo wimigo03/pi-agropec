@@ -24,9 +24,7 @@ class ProductoController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('productos.index',Auth::user()->empresa_id);
         }
@@ -169,7 +167,7 @@ class ProductoController extends Controller
             $user = User::where('id',Auth::user()->id)->first();
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'categoria_master_id' => $request->categoria_master_id,
                 'categoria_id' => $request->categoria_id,
                 'plan_cuenta_id' => $categoria->plan_cuenta_id,
@@ -200,7 +198,7 @@ class ProductoController extends Controller
                 $datosPrecioProducto = [
                     'producto_id' => $producto->id,
                     'empresa_id' => $empresa->id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'categoria_id' => $producto->categoria_id,
                     'categoria_master_id' => $producto->categoria_master_id,
                     'plan_cuenta_id' => $producto->plan_cuenta_id,
@@ -263,7 +261,7 @@ class ProductoController extends Controller
             $categoria = Categoria::find($request->categoria_id);
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'categoria_master_id' => $request->categoria_master_id,
                 'categoria_id' => $request->categoria_id,
                 'plan_cuenta_id' => $categoria->plan_cuenta_id,

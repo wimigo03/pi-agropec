@@ -19,13 +19,12 @@ class PlanCuentaController extends Controller
 
     public function indexAfter()
     {
+        $icono = self::ICONO;
+        $header = self::INDEX;
         $empresas = Empresa::query()
-                            ->byCliente()
+                            ->byPiCliente(Auth::user()->pi_cliente_id)
                             ->pluck('nombre_comercial','id');
-        if(count($empresas) == 1 && Auth::user()->id != 1){
-            return redirect()->route('plan_cuentas.index',['empresa_id' => Auth::user()->empresa_id, 'status' => '[]']);
-        }
-        return view('plan_cuentas.indexAfter', compact('empresas'));
+        return view('plan_cuentas.indexAfter', compact('icono','header','empresas'));
     }
 
     public function index($empresa_id,$status)
@@ -33,14 +32,17 @@ class PlanCuentaController extends Controller
         $icono = self::ICONO;
         $header = self::INDEX;
         $estado = $status == 1 ? ['1'] : ['1','2'];
-        $empresas_info = Empresa::where('cliente_id',Auth::user()->cliente_id)->get();
-        $empresa = Empresa::find($empresa_id);
         $empresas = Empresa::query()
-                            ->byCliente()
+                            ->byPiCliente(Auth::user()->pi_cliente_id)
                             ->pluck('nombre_comercial','id');
-        $plan_de_cuentas = PlanCuenta::where('empresa_id',$empresa_id)->whereIn('estado',$estado)->get();
+        $empresa = Empresa::find($empresa_id);
+        $plan_de_cuentas = PlanCuenta::query()
+                                        ->byPiCliente(Auth::user()->pi_cliente_id)
+                                        ->byEmpresa($empresa_id)
+                                        ->whereIn('estado',$estado)
+                                        ->get();
         $tree = $plan_de_cuentas != null ? $this->buildTree($plan_de_cuentas) : null;
-        return view('plan_cuentas.index', compact('icono','header','estado','empresas_info','empresa','empresas','plan_de_cuentas','tree'));
+        return view('plan_cuentas.index', compact('icono','header','estado','empresas','empresa','plan_de_cuentas','tree'));
     }
 
     protected function buildTree($nodes)
@@ -71,8 +73,8 @@ class PlanCuentaController extends Controller
         return $tree;
     }
 
-    public function getDatosPlanCuenta($id){
-        $plan_cuenta = PlanCuenta::find($id);
+    public function getDatosPlanCuenta($empresa_id,$id){;
+        $plan_cuenta = PlanCuenta::where('empresa_id',$empresa_id)->where('id',$id)->first();
         if($plan_cuenta->count()>0){
             return $plan_cuenta;
         } else return response()->json(['error'=>'Algo Salio Mal']);
@@ -94,7 +96,7 @@ class PlanCuentaController extends Controller
             $moneda = Moneda::find($request->moneda_id);
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'moneda_id' => $request->moneda_id,
                 'pais_id' => $moneda->pais_id,
                 'nombre' => $request->nombre,
@@ -117,12 +119,12 @@ class PlanCuentaController extends Controller
         }
     }
 
-    public function create_sub($id)
+    public function create_sub($empresa_id,$id)
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $plan_cuenta = PlanCuenta::find($id);
-        $empresa = Empresa::find($plan_cuenta->empresa_id);
+        $plan_cuenta = PlanCuenta::where('empresa_id',$empresa_id)->where('id',$id)->first();
+        $empresa = Empresa::find($empresa_id);
         return view('plan_cuentas.create-sub', compact('icono','header','plan_cuenta','empresa'));
     }
 
@@ -138,7 +140,7 @@ class PlanCuentaController extends Controller
             $moneda = Moneda::find($request->moneda_id);
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'moneda_id' => $request->moneda_id,
                 'pais_id' => $moneda->pais_id,
                 'nombre' => $request->nombre,
@@ -161,7 +163,7 @@ class PlanCuentaController extends Controller
         }
     }
 
-    public function habilitar($id)
+    public function habilitar($empresa_id,$id)
     {
         try {
             ini_set('memory_limit','-1');
@@ -173,7 +175,7 @@ class PlanCuentaController extends Controller
                     $parent = PlanCuenta::find($plan_cuenta->parent_id);
                     if($parent != null){
                         if($parent->estado == 2){
-                            return redirect()->route('plan_cuentas.index', ['empresa_id' => $plan_de_cuenta->empresa_id,'status' => '[]','nodeId' => $parent->id])->with('error_message', 'La Accion que dese realizar no esta permitida...');
+                            return redirect()->route('plan_cuentas.index', ['empresa_id' => $empresa_id,'status' => '[]','nodeId' => $parent->id])->with('error_message', 'La Accion que dese realizar no esta permitida...');
                         }else{
                             $plan_cuenta->update([
                                 'estado' => '1'
@@ -186,7 +188,7 @@ class PlanCuentaController extends Controller
                     }
                 }
 
-                return redirect()->route('plan_cuentas.index', ['empresa_id' => $plan_de_cuenta->empresa_id,'status' => '[]','nodeId' => $plan_de_cuenta->id])->with('info_message', 'Plan de Cuenta Habilitado...');
+                return redirect()->route('plan_cuentas.index', ['empresa_id' => $empresa_id,'status' => '[]','nodeId' => $plan_de_cuenta->id])->with('info_message', 'Plan de Cuenta Habilitado...');
         } catch (\Throwable $th) {
             return view('errors.500');
         }finally{
@@ -195,7 +197,7 @@ class PlanCuentaController extends Controller
         }
     }
 
-    public function deshabilitar($id)
+    public function deshabilitar($empresa_id,$id)
     {
         try {
             ini_set('memory_limit','-1');
@@ -209,7 +211,7 @@ class PlanCuentaController extends Controller
                     ]);
                 }
 
-                return redirect()->route('plan_cuentas.index', ['empresa_id' => $plan_de_cuenta->empresa_id,'status' => '[]','nodeId' => $plan_de_cuenta->id])->with('info_message', 'Plan de Cuenta Deshabilitado...');
+                return redirect()->route('plan_cuentas.index', ['empresa_id' => $empresa_id,'status' => '[]','nodeId' => $plan_de_cuenta->id])->with('info_message', 'Plan de Cuenta Deshabilitado...');
         } catch (\Throwable $th) {
             return view('errors.500');
         }finally{
@@ -218,12 +220,12 @@ class PlanCuentaController extends Controller
         }
     }
 
-    public function editar($id)
+    public function editar($empresa_id,$id)
     {
         $icono = self::ICONO;
         $header = self::EDITAR;
         $plan_cuenta = PlanCuenta::find($id);
-        $empresa = Empresa::find($plan_cuenta->empresa_id);
+        $empresa = Empresa::find($empresa_id);
         return view('plan_cuentas.editar-sub', compact('icono','header','plan_cuenta','empresa'));
     }
 
@@ -236,7 +238,7 @@ class PlanCuentaController extends Controller
             $plan_de_cuenta = PlanCuenta::find($request->plancuenta_id);
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'moneda_id' => $request->moneda_id,
                 'nombre' => $request->nombre,
                 'auxiliar' => isset($request->auxiliar) ? '1' : '0',

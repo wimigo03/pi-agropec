@@ -43,7 +43,7 @@
         <label for="total_bono" class="d-inline">Total Bono</label>
         <input type="text" name="total_bono" value="{{ old('total_bono') }}" id="total_bono" class="form-control font-roboto-12" disabled>
     </div>
-    <div class="col-md-2 pl-1 font-roboto-12">
+    <div class="col-md-2 pr-1 pl-1 font-roboto-12">
         <label for="total_ganado" class="d-inline">Total Ganado</label>
         <input type="text" name="total_ganado" value="{{ old('total_ganado') }}" id="total_ganado" class="form-control font-roboto-12" disabled>
     </div>

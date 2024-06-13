@@ -20,7 +20,7 @@
                         ESTADO DE RESULTADO
                         <br>
                         <span class="font-verdana-10">
-                            {{ \Carbon\Carbon::parse($fecha_i)->format('d/m/Y') }} - {{ \Carbon\Carbon::parse($fecha_f)->format('d/m/Y') }}
+                            {{ \Carbon\Carbon::parse($fecha_i)->format('d-m-Y') }} - {{ \Carbon\Carbon::parse($fecha_f)->format('d-m-Y') }}
                         </span>
                     </b>
                 </td>

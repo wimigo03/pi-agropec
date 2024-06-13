@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Empresa;
 use App\Models\Categoria;
 use App\Models\PlanCuenta;
@@ -17,7 +17,7 @@ class Producto extends Model
     protected $table = 'productos';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'categoria_master_id',
         'categoria_id',
         'plan_cuenta_id',
@@ -41,15 +41,15 @@ class Producto extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "H";
-            case '2': 
+            case '2':
                 return "D";
         }
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function empresa(){
@@ -80,27 +80,27 @@ class Producto extends Model
     }
 
     public function scopeByEmpresa($query, $empresa_id){
-        if($empresa_id)  
+        if($empresa_id)
             return $query->where('empresa_id', $empresa_id);
     }
 
     public function scopeByProducto($query, $producto_id){
-        if($producto_id)  
+        if($producto_id)
             return $query->where('id', $producto_id);
     }
 
     public function scopeByNombre($query, $nombre){
-        if($nombre)  
+        if($nombre)
             return $query->where('nombre', 'like','%'.$nombre.'%');
     }
 
     public function scopeByNombreFactura($query, $nombre_factura){
-        if($nombre_factura)  
+        if($nombre_factura)
             return $query->where('nombre_factura', 'like','%'.$nombre_factura.'%');
     }
 
     public function scopeByCodigo($query, $codigo){
-        if($codigo)  
+        if($codigo)
             return $query->where('codigo', 'like','%'.$codigo.'%');
     }
 
@@ -139,7 +139,7 @@ class Producto extends Model
     }
 
     public function scopeByEstado($query, $estado){
-        if($estado)  
+        if($estado)
             return $query->where('estado', $estado);
     }
 }

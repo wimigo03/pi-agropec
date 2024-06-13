@@ -58,7 +58,7 @@
                 event.preventDefault();
             }
         });
-        
+
         function create(){
             $(".btn").hide();
             $(".spinner-btn").show();

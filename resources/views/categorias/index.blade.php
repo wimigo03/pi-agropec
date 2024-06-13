@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 @extends('layouts.dashboard')
 <style>
-    .jstree li > a > .jstree-icon {  
-        display:none !important; 
+    .jstree li > a > .jstree-icon {
+        display:none !important;
     }
 
     #treeview {
-        min-height: 200px;            
+        min-height: 200px;
     }
     #contenido {
         min-height: 200px;
@@ -37,7 +37,7 @@
 @include('categorias.partials.menu')
 @if (isset($categorias_platos) || isset($categorias_insumos))
     <div class="form-group row">
-        <div class="col-md-12">
+        <div class="col-md-12 px-1">
             <ul class="nav nav-tabs" id="myTabs" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link active font-roboto-15" id="tab1" data-toggle="tab" href="#content1" role="tab" aria-controls="content1" aria-selected="true">
@@ -167,7 +167,7 @@
                 }
             });
         });
-        
+
         function datosCategoria(id){
             $.ajax({
                 type: 'GET',

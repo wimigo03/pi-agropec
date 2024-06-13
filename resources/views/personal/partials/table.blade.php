@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display responsive table-striped">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-left p-1"><b>COD. ING.</b></td>
                     <td class="text-left p-1"><b>INGRESO</b></td>
                     <td class="text-left p-1"><b>COD. RET.</b></td>
@@ -18,7 +18,7 @@
             </thead>
             <tbody>
                 @foreach ($personal_laborales as $datos)
-                    <tr class="font-roboto-12">
+                    <tr class="font-roboto-11">
                         @php
                             $contratos = App\Models\PersonalContrato::where('personal_id',$datos->personal_id)->get();
                         @endphp
@@ -52,7 +52,7 @@
                         </td>
                         @canany(['personal.show','personal.modificar','personal.retirar','personal.cargar.contrato'])
                             <td class="text-center p-1" style="vertical-align: middle;">
-                                <select id="{{ $datos->id }}" onchange="redireccionar(this.id);" class="form-control form-control-sm select2-container">
+                                <select id="{{ $datos->id }}" onchange="redireccionar(this.id);" class="form-control font-roboto-12 select2-container">
                                     <option value="Seleccionar">Seleccionar</option>
                                     @can('personal.show')
                                         <option value="Ver">Ir a detalle</option>

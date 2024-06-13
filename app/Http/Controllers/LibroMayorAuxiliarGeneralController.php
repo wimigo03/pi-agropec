@@ -23,23 +23,42 @@ class LibroMayorAuxiliarGeneralController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('libro.mayor.auxiliar.general.index',Auth::user()->empresa_id);
         }
         return view('libro_mayor_auxiliar_general.indexAfter', compact('empresas'));
     }
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
-        $auxiliares = PlanCuentaAuxiliar::where('estado','1')->pluck('nombre','id');
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $estados_comprobantes = Comprobante::ESTADOS_SEARCH;
-        return view('libro_mayor_auxiliar_general.index', compact('icono','header','empresa','auxiliares','estados_comprobantes'));
+        return view('libro_mayor_auxiliar_general.index', compact('icono','header','empresas','estados_comprobantes'));
+    }
+
+    public function getPlanCuentasAuxiliares(Request $request){
+        try{
+            $input = $request->all();
+            $id = $input['id'];
+            $plan_cuentas_auxiliares = PlanCuentaAuxiliar::select('nombre','id')
+                                                ->where('estado','1')
+                                                ->where('empresa_id',$id)
+                                                ->orderBy('nombre','asc')
+                                                ->get()
+                                                ->toJson();
+            if($plan_cuentas_auxiliares){
+                return response()->json([
+                    'plan_cuentas_auxiliares' => $plan_cuentas_auxiliares
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function search(Request $request)
@@ -47,8 +66,8 @@ class LibroMayorAuxiliarGeneralController extends Controller
         $icono = self::ICONO;
         $header = self::INDEX;
         $empresa_id = $request->empresa_id;
-        $fecha_i = date('Y-m-d 00:00:00', strtotime(str_replace('/', '-', $request->fecha_i)));
-        $fecha_f = date('Y-m-d 23:59:59', strtotime(str_replace('/', '-', $request->fecha_f)));
+        $fecha_i = date('Y-m-d', strtotime($request->fecha_i));
+        $fecha_f = date('Y-m-d', strtotime($request->fecha_f));
         $plan_cuenta_auxiliar_id = $request->plan_cuenta_auxiliar_id;
         $estados = $request->estado == '_TODOS_' ? ['1','2'] : [$request->estado];
         try{
@@ -75,14 +94,16 @@ class LibroMayorAuxiliarGeneralController extends Controller
         $comprobantes = DB::table('comprobante_detalles as a')
                                 ->join('comprobantes as b','b.id','a.comprobante_id')
                                 ->join('plan_cuentas as c','c.id','a.plan_cuenta_id')
-                                ->join('centros_contables as e','e.id','a.centro_contable_id')
+                                ->join('centros as d','d.id','a.centro_id')
+                                ->join('sub_centros as e','e.id','a.sub_centro_id')
                                 ->whereBetween('b.fecha',[$fecha_i,$fecha_f])
                                 ->where('a.plan_cuenta_auxiliar_id',$plan_cuenta_auxiliar_id)
                                 ->where('b.empresa_id',$empresa_id)
                                 ->where('a.estado','1')
                                 ->whereIn('b.estado',$estados)
+                                ->orderBy('b.fecha','asc')
                                 ->select(
-                                        DB::raw("DATE_FORMAT(b.fecha,'%d/%m/%Y') as fecha"),
+                                        DB::raw("DATE_FORMAT(b.fecha,'%d-%m-%y') as fecha"),
                                         'b.nro_comprobante',
                                         DB::raw("CASE
                                             WHEN b.estado = 1 THEN 'BORRADOR'
@@ -96,7 +117,8 @@ class LibroMayorAuxiliarGeneralController extends Controller
                                         END AS estado_abreviado"),
                                         'c.codigo',
                                         'c.nombre as plan_cuenta',
-                                        'e.nombre as centro',
+                                        'd.nombre as centro',
+                                        'e.nombre as subcentro',
                                         'a.nro_cheque',
                                         'a.glosa',
                                         'a.debe',
@@ -146,13 +168,14 @@ class LibroMayorAuxiliarGeneralController extends Controller
                                 ->select('a.debe','a.haber')
                                 ->get();
         $saldo = $sumar_restar->sum('debe') - $sumar_restar->sum('haber');
+
         return $saldo;
     }
     public function excel(Request $request)
     {
         $empresa_id = $request->empresa_id;
-        $fecha_i = date('Y-m-d 00:00:00', strtotime(str_replace('/', '-', $request->fecha_i)));
-        $fecha_f = date('Y-m-d 23:59:59', strtotime(str_replace('/', '-', $request->fecha_f)));
+        $fecha_i = date('Y-m-d', strtotime($request->fecha_i));
+        $fecha_f = date('Y-m-d', strtotime($request->fecha_f));
         $plan_cuenta_auxiliar_id = $request->plan_cuenta_auxiliar_id;
         $estados = $request->estado == '_TODOS_' ? ['1','2'] : [$request->estado];
         try {
@@ -180,8 +203,8 @@ class LibroMayorAuxiliarGeneralController extends Controller
     public function pdf(Request $request)
     {
         $empresa_id = $request->empresa_id;
-        $fecha_i = date('Y-m-d 00:00:00', strtotime(str_replace('/', '-', $request->fecha_i)));
-        $fecha_f = date('Y-m-d 23:59:59', strtotime(str_replace('/', '-', $request->fecha_f)));
+        $fecha_i = date('Y-m-d', strtotime($request->fecha_i));
+        $fecha_f = date('Y-m-d', strtotime($request->fecha_f));
         $plan_cuenta_auxiliar_id = $request->plan_cuenta_auxiliar_id;
         $estados = $request->estado == '_TODOS_' ? ['1','2'] : [$request->estado];
         try {

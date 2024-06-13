@@ -15,12 +15,12 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary font-verdana" type="button" onclick="storeUnidadMedida();">
-                    <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-                </button>
-                <button type="button" class="btn btn-secondary font-verdana" data-dismiss="modal">
-                    <i class="fa-solid fa-xmark"></i>&nbsp;Cancelar
-                </button>
+                <span class="btn btn-primary font-roboto-12" onclick="storeUnidadMedida();">
+                    <i class="fas fa-paper-plane fa-fw"></i>&nbsp;Procesar
+                </span>
+                <span class="btn btn-secondary font-roboto-12" data-dismiss="modal">
+                    <i class="fa-solid fa-xmark fa-fw"></i>&nbsp;Cancelar
+                </span>
             </div>
         </div>
     </div>

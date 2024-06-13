@@ -20,19 +20,30 @@ class EstadoResultadoFController extends Controller
     const ICONO = 'fa-solid fa-tag fa-fw';
     const INDEX = 'ESTADO DE RESULTADO';
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $show = '0';
-        return view('estado_resultado_f.index', compact('icono','header','empresa','show'));
+        return view('estado_resultado_f.index', compact('icono','header','empresas','show'));
     }
 
     public function search(Request $request)
     {
+        $request->validate([
+            'empresa_id' => 'required',
+            'fecha_i' => 'required',
+            'fecha_f' => 'required'
+        ]);
+
         $icono = self::ICONO;
         $header = self::INDEX;
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $fecha_i = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_i)));
         $fecha_f = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_f)));
 
@@ -57,7 +68,7 @@ class EstadoResultadoFController extends Controller
                 $total = $estado_resultado['total'];
                 $totales = $estado_resultado['totales'];
                 $show = '1';
-                return view('estado_resultado_f.index', compact('icono','header','empresa','ingresos','costos','gastos','nroMaxColumna','total','totales','show'));
+                return view('estado_resultado_f.index', compact('icono','header','empresas','empresa','ingresos','costos','gastos','nroMaxColumna','total','totales','show'));
         } finally{
             ini_restore('memory_limit');
             ini_restore('max_execution_time');

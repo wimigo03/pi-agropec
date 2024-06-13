@@ -1,12 +1,12 @@
 <form action="#" method="post" id="form">
     @csrf
-    <input type="hidden" name="cliente_id" value="{{ $empresa->cliente_id }}" id="cliente_id">
+    <input type="hidden" name="pi_cliente_id" value="{{ $empresa->pi_cliente_id }}" id="pi_cliente_id">
     <input type="hidden" name="empresa_id" value="{{ $empresa->id }}" id="empresa_id">
     <div class="form-group row font-roboto-12">
         <div class="col-md-4 hiddenContent" id="datos-mesa" style="display: none;">
             x
         </div>
-        <div class="col-md-12" id="mapa-mesa">
+        <div class="col-md-12 px-1" id="mapa-mesa">
             <ul class="nav nav-tabs" id="myTabs" role="tablist">
                 @foreach($zonas as $key => $zona)
                     <li class="nav-item">
@@ -56,7 +56,7 @@
                                     </table>
                                 </div>
                             </div>
-                        </div>           
+                        </div>
                     </div>
                 @endforeach
             </div>

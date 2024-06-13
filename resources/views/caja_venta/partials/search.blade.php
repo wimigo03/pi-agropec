@@ -1,7 +1,7 @@
 <form action="#" method="get" id="form">
     <input type="hidden" name="empresa_id" value="{{ $empresa->id }}">
     <div class="form-group row font-roboto-12">
-        <div class="col-md-4 px-0 pr-1">
+        <div class="col-md-4 px-1 pr-1">
             <select name="sucursal_id" id="sucursal_id" class="form-control">
                 <option value="">-</option>
                 @foreach ($sucursales as $index => $value)
@@ -15,7 +15,7 @@
         <div class="col-md-2 pr-1 pl-1">
             <input type="text" name="codigo" value="{{ request('codigo') }}" id="codigo" placeholder="--Codigo--" class="form-control font-roboto-12 intro" oninput="this.value = this.value.toUpperCase()">
         </div>
-        <div class="col-md-4 pr-1 pl-1">
+        <div class="col-md-4 px-1 pl-1">
             <select name="user_id" id="user_id" class="form-control">
                 <option value="">-</option>
                 @foreach ($users as $index => $value)
@@ -25,7 +25,7 @@
         </div>
     </div>
     <div class="form-group row font-roboto-12">
-        <div class="col-md-4 px-0 pr-1">
+        <div class="col-md-4 px-1 pr-1">
             <select name="user_asignado_id" id="user_asignado_id" class="form-control">
                 <option value="">-</option>
                 @foreach ($users as $index => $value)
@@ -46,3 +46,21 @@
         </div>
     </div>
 </form>
+<div class="form-group row">
+    <div class="col-md-12 px-1">
+        @can('caja.venta.create')
+            <span class="tts:right tts-slideIn tts-custom" aria-label="Crear" style="cursor: pointer;">
+                <span class="btn btn-outline-success font-roboto-12" onclick="create();">
+                    <i class="fas fa-plus fa-fw"></i>
+                </span>
+            </span>
+        @endcan
+        <span class="btn btn-outline-danger font-roboto-12 float-right" onclick="limpiar();">
+            <i class="fas fa-eraser"></i>&nbsp;Limpiar
+        </span>
+        <span class="btn btn-outline-primary font-roboto-12 float-right mr-1" onclick="search();">
+            <i class="fas fa-search"></i>&nbsp;Buscar
+        </span>
+        <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
+    </div>
+</div>

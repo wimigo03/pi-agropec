@@ -2,9 +2,7 @@
 @extends('layouts.dashboard')
 @section('content')
     @include('balance_apertura.partials.search')
-    @if (count($balances) > 0)
-        @include('balance_apertura.partials.table')
-    @endif
+    @include('balance_apertura.partials.table')
 @endsection
 @section('scripts')
     @parent
@@ -36,23 +34,17 @@
         }
 
         function cambiarf(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.apertura.f.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('balance.apertura.f.index') }}";
             window.location.href = url;
         }
 
         function limpiar(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('balance.apertura.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('balance.apertura.index') }}";
             window.location.href = url;
         }
 
         function create(){
-            var id = $("#empresa_id").val()
-            var url = "{{ route('balance.apertura.create',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('balance.apertura.create') }}";
             window.location.href = url;
         }
     </script>

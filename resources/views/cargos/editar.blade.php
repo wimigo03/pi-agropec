@@ -14,13 +14,13 @@
                     @include('cargos.partials.form-editar')
                 </form>
                 <div class="form-group row">
-                    <div class="col-md-12 text-right">
-                        <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
+                    <div class="col-md-12 pr-1 text-right">
+                        <span class="btn btn-outline-primary font-roboto-12" onclick="procesar();">
                             <i class="fas fa-paper-plane"></i>&nbsp;Actualizar
-                        </button>
-                        <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
+                        </span>
+                        <span class="btn btn-outline-danger font-roboto-12" onclick="cancelar();">
                             &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-                        </button>
+                        </span>
                         <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
                     </div>
                 </div>

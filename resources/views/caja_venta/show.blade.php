@@ -2,29 +2,6 @@
 @extends('layouts.dashboard')
 @section('content')
     @include('caja_venta.partials.form-show')
-    <div class="form-group row">
-        <div class="col-md-6 px-0 pr-1">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-arrow-left fa-fw"></i>&nbsp;Ir a listado
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-        <div class="col-md-6 text-right px-0 pl-1">
-            @if ($caja_venta->estado == '1')
-                @can('caja.venta.aprobar')
-                    <button class="btn btn-outline-success font-verdana" type="button" onclick="procesar();">
-                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp;Aprobar
-                    </button>
-                @endcan
-                @can('caja.venta.aprobar')
-                    <button class="btn btn-outline-warning font-verdana" type="button" onclick="rechazar();">
-                        <i class="fas fa-paper-plane fa-fw"></i>&nbsp;Rechazar
-                    </button>
-                @endcan
-            @endif
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent

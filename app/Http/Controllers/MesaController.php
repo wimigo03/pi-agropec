@@ -22,9 +22,7 @@ class MesaController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('mesas.index',Auth::user()->empresa_id);
         }
@@ -112,7 +110,7 @@ class MesaController extends Controller
                 'zona_id' => $request->zona_id,
                 'sucursal_id' => $request->sucursal_id,
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $request->cliente_id,
+                'pi_cliente_id' => $request->pi_cliente_id,
                 'numero' => $request->numero,
                 'sillas' => $request->sillas,
                 'detalle' => $request->detalle,
@@ -226,7 +224,7 @@ class MesaController extends Controller
         $sucursal = Sucursal::find($sucursal_id);
         $zonas = Zona::where('sucursal_id',$sucursal_id)->where('estado','1')->get();
         $empresa = Empresa::find($sucursal->empresa_id);
-        return view('mesas.set  ting', compact('icono','header','zonas','empresa'));
+        return view('mesas.setting', compact('icono','header','zonas','empresa'));
     }
 
     public function getMesasByZona(Request $request){

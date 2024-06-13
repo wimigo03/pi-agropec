@@ -36,7 +36,7 @@
                                         <span class="btns btn btn-sm btn-secondary font-verdana" onclick="crear_platos_master();">
                                             <i class="fa-solid fa-user-plus fa-fw"></i>
                                         </span>
-                                    </span> 
+                                    </span>
                                 </div>
                             </div>
                         @endcan
@@ -46,7 +46,7 @@
                                     <span class="tts:left tts-slideIn tts-custom" aria-label="Crear SubCategoria" style="cursor: pointer;">
                                         <span class="btns btn btn-sm btn-secondary font-verdana" onclick="crear_platos();">
                                             <i class="fa-solid fa-user-minus fa-fw"></i>
-                                        </span> 
+                                        </span>
                                     </span>
                                 </div>
                             </div>
@@ -92,7 +92,7 @@
     <div class="col-md-4 pl-1">
         <div class="card card-body" style="border-top: none; border-radius: 0px;">
             <div id="contenido">
-                <input type="hidden" value="#" name="categoria_id" id="categoria_id">    
+                <input type="hidden" value="#" name="categoria_id" id="categoria_id">
                 <input type="hidden" value="1" id="tipo_platos">
                 @if (isset($categorias_platos))
                     @include('categorias.partials.contenido')

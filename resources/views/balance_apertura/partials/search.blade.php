@@ -2,8 +2,7 @@
 
 </form>
 <div class="form-group row">
-    <div class="col-md-6 px-0 pr-1">
-        <input type="hidden" name="empresa_id" value="{{ $empresa->id }}" id="empresa_id">
+    <div class="col-md-12 px-1">
         @can('balance.apertura.f.index')
             <span class="tts:right tts-slideIn tts-custom" aria-label="Cambiar" style="cursor: pointer;">
                 <button class="btn btn-outline-warning font-roboto-12" type="button" onclick="cambiarf();">
@@ -13,7 +12,7 @@
         @endcan
         @can('balance.apertura.create')
             <span class="tts:right tts-slideIn tts-custom" aria-label="Crear" style="cursor: pointer;">
-                <button class="btn btn-outline-success font-verdana" type="button" onclick="create();">
+                <button class="btn btn-outline-success font-roboto-12" type="button" onclick="create();">
                     <i class="fas fa-plus fa-fw"></i>
                 </button>
             </span>

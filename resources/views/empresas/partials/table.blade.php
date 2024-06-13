@@ -1,5 +1,5 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display responsive table-striped hover-orange">
             <thead>
                 <tr class="font-roboto-11">

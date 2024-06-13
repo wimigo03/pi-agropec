@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Sucursal;
 use App\Models\Zona;
 
@@ -18,7 +18,7 @@ class Mesa extends Model
         'zona_id',
         'sucursal_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'numero',
         'sillas',
         'detalle',
@@ -39,38 +39,38 @@ class Mesa extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
-            case '3': 
+            case '3':
                 return "CONFIGURADO";
-            /*case '3': 
+            /*case '3':
                 return "LIBRE";
-            case '4': 
+            case '4':
                 return "RESERVADA";
-            case '5': 
+            case '5':
                 return "OCUPADA";
-            case '6': 
+            case '6':
                 return "SUCIA";*/
         }
     }
 
     public function getcolorStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "badge-with-padding badge badge-success";
-            case '2': 
+            case '2':
                 return "badge-with-padding badge badge-danger";
-            case '3': 
+            case '3':
                 return "badge-with-padding badge badge-warning";
-            /*case '3': 
+            /*case '3':
                 return "LIBRE";
-            case '4': 
+            case '4':
                 return "RESERVADA";
-            case '5': 
+            case '5':
                 return "OCUPADA";
-            case '6': 
+            case '6':
                 return "SUCIA";*/
         }
     }
@@ -80,7 +80,7 @@ class Mesa extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function sucursal(){

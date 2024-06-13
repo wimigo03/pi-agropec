@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Producto;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Categoria;
 use App\Models\PlanCuenta;
 use App\Models\Unidad;
@@ -24,7 +24,7 @@ class PrecioProducto extends Model
     protected $fillable = [
         'producto_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'categoria_id',
         'categoria_master_id',
         'plan_cuenta_id',
@@ -53,11 +53,11 @@ class PrecioProducto extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
-            case '3': 
+            case '3':
                 return "MODIFICADO";
         }
     }
@@ -99,7 +99,7 @@ class PrecioProducto extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function categoria(){

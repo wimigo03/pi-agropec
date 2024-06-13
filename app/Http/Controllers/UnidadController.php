@@ -77,13 +77,13 @@ class UnidadController extends Controller
             $empresa = Empresa::find($request->empresa_id);
             $unidad = Unidad::create([
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'nombre' => $request->nombre,
                 'codigo' => $request->codigo,
                 'tipo' => $request->tipo,
                 'estado' => '1'
                 ]);
-            
+
                 if(isset($request->form_prod)){
                     return back()->with('success_message', 'Se agregó un unidad de medida correctamente.');;
                 }

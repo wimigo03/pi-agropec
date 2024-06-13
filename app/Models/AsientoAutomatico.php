@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Modulo;
 use Carbon\Carbon;
 
@@ -16,7 +16,7 @@ class AsientoAutomatico extends Model
     protected $table = 'asientos_automaticos';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'modulo_id',
         'nombre',
         'estado'
@@ -50,11 +50,17 @@ class AsientoAutomatico extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function modulo(){
         return $this->belongsTo(Modulo::class,'modulo_id','id');
+    }
+
+    public function scopeByPiCliente($query, $pi_cliente_id){
+        if($pi_cliente_id){
+            return $query->where('pi_cliente_id', $pi_cliente_id);
+        }
     }
 
     public function scopeByEmpresa($query, $empresa_id){

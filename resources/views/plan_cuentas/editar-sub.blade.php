@@ -13,17 +13,6 @@
 </style>
 @section('content')
     @include('plan_cuentas.partials.form-editar-sub')
-    <div class="form-group row">
-        <div class="col-md-12 text-right">
-            <button class="btns btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-            </button>
-            <button class="btns btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent
@@ -90,10 +79,10 @@
         }
 
         function limpiar(){
-            $(".btns").hide();
-            $(".spinner-btn").show();
+            var empresa_id = $("#empresa_id").val();
             var id = $("#plancuenta_id").val();
-            var url = "{{ route('plan_cuentas.editar',':id') }}";
+            var url = "{{ route('plan_cuentas.editar',['empresa_id' => ':empresa_id', 'id' => ':id']) }}";
+            url = url.replace(':empresa_id',empresa_id);
             url = url.replace(':id',id);
             window.location.href = url;
         }

@@ -1,35 +1,15 @@
 <!DOCTYPE html>
 @extends('layouts.dashboard')
 @section('content')
-    <div class="form-group row">
-        <div class="col-md-12">
-            <div class="card-header header">
-                <div class="row">
-                    <div class="col-md-10 font-roboto-17" style="display: flex; align-items: flex-end;">
-                        <span class="btn btn-sm btn-outline-dark font-roboto-12" id="toggleSubMenu" style="cursor: pointer;">
-                            <i class="fas fa-address-card fa-fw fa-beat"></i>
-                        </span>&nbsp;
-                        <b>{{ $cliente->nombre }} - REGISTRAR EMPRESA</b>
-                    </div>
-                    <div class="col-md-2">
-                        &nbsp;
-                    </div>
-                </div>
-            </div>
+    <div class="row">
+        <div class="col-md-12 font-roboto-17">
+            <span id="toggleSubMenu" style="cursor: pointer;">
+                <i class="fas fa-address-card fa-fw fa-beat"></i> <b>{{ $cliente->nombre }} - REGISTRAR EMPRESA</b>
+            </span>
         </div>
     </div>
+    <hr class="custom-hr">
     @include('empresas.partials.form-create')
-    <div class="form-group row">
-        <div class="col-md-12 text-right">
-            <button class="btn btn-outline-primary font-roboto-12" id="btn-registro" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-            </button>
-            <button class="btn btn-outline-danger font-roboto-12" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent
@@ -157,7 +137,7 @@
         function cancelar(){
             $(".btn").hide();
             $(".spinner-btn").show();
-            var id = $("#cliente_id").val();
+            var id = $("#pi_cliente_id").val();
             var url = "{{ route('empresas.index',':id') }}";
             url = url.replace(':id',id);
             window.location.href = url;

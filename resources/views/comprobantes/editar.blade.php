@@ -19,17 +19,6 @@
 </style>
 @section('content')
     @include('comprobantes.partials.form-editar')
-    <div class="form-group row">
-        <div class="col-md-12 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Actualizar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent
@@ -73,14 +62,26 @@
                 width: '100%'
             });
 
-            $(".tiene-auxiliar").show();
-            $(".no-tiene-auxiliar").hide();
+            $('#sub_centro_id').on('select2:open', function(e) {
+                if($("#centro_id >option:selected").val() == ""){
+                    alert("Para continuar se debe seleccionar un <b>[CENTRO]</b>.");
+                }
+            });
+
+            $(".tiene-auxiliar").hide();
+            $(".no-tiene-auxiliar").show();
             if($("#plan_cuenta_id >option:selected").val() != ""){
                 var plan_cuenta_id = $("#plan_cuenta_id >option:selected").val();
                 tiene_auxiliar(plan_cuenta_id);
             }
 
             obligatorio();
+
+            if($("#centro_id >option:selected").val() != ''){
+                var id = $("#centro_id >option:selected").val();
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                getSubCentros(id,CSRF_TOKEN);
+            }
         });
 
         function alert(mensaje){
@@ -129,7 +130,7 @@
             var table = document.getElementById("tabla_comprobante_detalle");
             var suma_debe = 0;
             for (var i = 1; i < table.rows.length - 1; i++) {
-                var debe_cleave = table.rows[i].cells[5].textContent;
+                var debe_cleave = table.rows[i].cells[6].textContent;
                 var debe = parseFloat(debe_cleave.replace(/,/g, ''));
                 if (!isNaN(debe)) {
                     suma_debe += debe;
@@ -145,7 +146,7 @@
             var table = document.getElementById("tabla_comprobante_detalle");
             var suma_haber = 0;
             for (var i = 1; i < table.rows.length - 1; i++) {
-                var haber_cleave = table.rows[i].cells[6].textContent;
+                var haber_cleave = table.rows[i].cells[7].textContent;
                 var haber = parseFloat(haber_cleave.replace(/,/g, ''));
                 if (!isNaN(haber)) {
                     suma_haber += haber;
@@ -231,15 +232,52 @@
             cargar_comprobante_detalle();
         }
 
+        $('#centro_id').change(function() {
+            var id = $(this).val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            getSubCentros(id,CSRF_TOKEN);
+        });
+
+        function getSubCentros(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/comprobantes/get_subcentros',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.subcentros){
+                        var arr = Object.values($.parseJSON(data.subcentros));
+                        $("#sub_centro_id").empty();
+                        var select = $("#sub_centro_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.nombre);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
+
         function cargar_comprobante_detalle(){
             var table = document.getElementById("tabla_comprobante_detalle");
             var rowCount = table.rows.length - 1;
-            var centro_contable_id = $("#centro_contable_id >option:selected").val();
-            var centro_contable = $("#centro_contable_id >option:selected").text();
+            var centro_id = $("#centro_id >option:selected").val();
+            var centro = $("#centro_id >option:selected").text();
+            var sub_centro_id = $("#sub_centro_id >option:selected").val();
+            var sub_centro = $("#sub_centro_id >option:selected").text();
             var plan_cuenta_id = $("#plan_cuenta_id >option:selected").val();
             var plan_cuenta = $("#plan_cuenta_id >option:selected").text();
             var auxiliar_id = $("#auxiliar_id >option:selected").val();
             var auxiliar = $("#auxiliar_id >option:selected").text();
+            if(auxiliar === '--Seleccionar--'){
+                auxiliar = '';
+            }
             var debe = $("#debe").val() != '' ? $("#debe").val() : 0;
             var haber = $("#haber").val() != '' ? $("#haber").val() : 0;
             var glosa = $("#glosa").val();
@@ -248,12 +286,16 @@
                                     rowCount +
                             "</td>"+
                             "<td class='text-left p-1'>"+
-                                "<input type='hidden' name='centro_contable_id[]' value='" + centro_contable_id + "'>" +
-                                    centro_contable +
-                            "</td>"+
-                            "<td class='text-left p-1'>"+
                                 "<input type='hidden' name='plan_cuenta_id[]' value='" + plan_cuenta_id + "'>" +
                                     plan_cuenta +
+                            "</td>"+
+                            "<td class='text-left p-1'>"+
+                                "<input type='hidden' name='centro_id[]' value='" + centro_id + "'>" +
+                                    centro +
+                            "</td>"+
+                            "<td class='text-left p-1'>"+
+                                "<input type='hidden' name='sub_centro_id[]' value='" + sub_centro_id + "'>" +
+                                    sub_centro +
                             "</td>"+
                             "<td class='text-left p-1'>"+
                                 "<input type='hidden' name='auxiliar_id[]' value='" + auxiliar_id + "'>" +
@@ -280,9 +322,10 @@
 
             $("#tabla_comprobante_detalle").append(fila);
             document.getElementById("tfoot").style.display = "table-footer-group";
-            $('#centro_contable_id').val('').trigger('change');
             $('#plan_cuenta_id').val('').trigger('change');
             $('#auxiliar_id').val('').trigger('change');
+            $(".tiene-auxiliar").hide();
+            $(".no-tiene-auxiliar").show();
             document.getElementById('debe').value = '';
             document.getElementById('haber').value = '';
             document.getElementById('debe_sus').value = '';
@@ -305,7 +348,7 @@
         function eliminar_registro(id){
             $.ajax({
                 type: 'GET',
-                url: '/comprobante/eliminar_registro/'+id,
+                url: '/comprobantes/eliminar_registro/'+id,
                 dataType: 'json',
                 data: {
                     id: id
@@ -320,8 +363,13 @@
         }
 
         function validar_detalle(){
-            if($("#centro_contable_id >option:selected").val() == ""){
+            if($("#centro_id >option:selected").val() == ""){
                 alert("El campo de seleccion <b>[CENTRO CONTABLE]</b> es un dato obligatorio...");
+                return false;
+            }
+
+            if($("#sub_centro_id >option:selected").val() == ""){
+                alert("El campo de seleccion <b>[SUB CENTRO CONTABLE]</b> es un dato obligatorio...");
                 return false;
             }
 
@@ -400,7 +448,7 @@
         function tiene_auxiliar(id){
             $.ajax({
                 type: 'GET',
-                url: '/comprobante/tiene_auxiliar/'+id,
+                url: '/comprobantes/tiene_auxiliar/'+id,
                 dataType: 'json',
                 data: {
                     id: id
@@ -429,11 +477,7 @@
         }
 
         function cancelar(){
-            $(".btn").hide();
-            $(".spinner-btn").show();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('comprobante.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('comprobante.index') }}";
             window.location.href = url;
         }
     </script>

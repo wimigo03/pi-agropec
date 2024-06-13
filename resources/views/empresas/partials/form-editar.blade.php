@@ -1,6 +1,6 @@
 <form action="#" method="post" id="form" enctype="multipart/form-data">
     @csrf
-    <input type="hidden" name="cliente_id" value="{{ $cliente->id }}" id="cliente_id">
+    <input type="hidden" name="pi_cliente_id" value="{{ $cliente->id }}" id="pi_cliente_id">
     <input type="hidden" name="empresa_id" value="{{ $empresa_cliente->id }}">
     <div class="form-group row">
         <div class="col-md-6 px-0 pr-1 font-roboto-12">

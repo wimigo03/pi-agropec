@@ -2,17 +2,6 @@
 @extends('layouts.dashboard')
 @section('content')
     @include('asientos_automaticos.partials.form-create')
-    <div class="form-group row" id="btn-registro">
-        <div class="col-md-12 text-right">
-            <button class="btn btn-outline-primary font-verdana" type="button" onclick="procesar();">
-                <i class="fas fa-paper-plane"></i>&nbsp;Procesar
-            </button>
-            <button class="btn btn-outline-danger font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Cancelar
-            </button>
-            <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
-        </div>
-    </div>
 @endsection
 @section('scripts')
     @parent
@@ -25,7 +14,51 @@
                 placeholder: "--Seleccionar--",
                 width: '100%'
             });
+
+            $('#plan_cuenta_id').on('select2:open', function(e) {
+                if($("#empresa_id >option:selected").val() == ""){
+                    Modal("Para continuar se debe seleccionar una <b>[EMPRESA]</b>.");
+                }
+            });
+
+            if($("#empresa_id >option:selected").val() != ''){
+                var id = $("#empresa_id >option:selected").val();
+                var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+                getPlanCuentas(id,CSRF_TOKEN);
+            }
         });
+
+        $('#empresa_id').change(function() {
+            var id = $(this).val();
+            var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+            getPlanCuentas(id,CSRF_TOKEN);
+        });
+
+        function getPlanCuentas(id,CSRF_TOKEN){
+            $.ajax({
+                type: 'GET',
+                url: '/asiento-automatico/get_plancuentas',
+                data: {
+                    _token: CSRF_TOKEN,
+                    id: id
+                },
+                success: function(data){
+                    if(data.plan_cuentas){
+                        var arr = Object.values($.parseJSON(data.plan_cuentas));
+                        $("#plan_cuenta_id").empty();
+                        var select = $("#plan_cuenta_id");
+                        select.append($("<option></option>").attr("value", '').text('--Seleccionar--'));
+                        $.each(arr, function(index, json) {
+                            var opcion = $("<option></option>").attr("value", json.id).text(json.cuenta_contable);
+                            select.append(opcion);
+                        });
+                    }
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+        }
 
         function Modal(mensaje){
             $("#modal-alert .modal-body").html(mensaje);
@@ -113,11 +146,23 @@
             $('#tipo').val('').trigger('change');
             document.getElementById('glosa').value = '';
             $("#btn-registro").show();
+            contar_registros();
         }
 
         function eliminarItem(thiss){
             var tr = $(thiss).parents("tr:eq(0)");
             tr.remove();
+            contar_registros();
+        }
+
+        function contar_registros(){
+            var table = document.getElementById("detalle_tabla");
+            var registros = table.rows.length - 1;
+            if(registros === 0){
+                $("#empresa_id").prop('disabled', false);
+            }else{
+                $("#empresa_id").prop('disabled', true);
+            }
         }
 
         function procesar() {
@@ -144,6 +189,7 @@
         }
 
         function confirmar(){
+            $('#empresa_id').prop('disabled', false);
             var url = "{{ route('asiento.automatico.store') }}";
             $("#form").attr('action', url);
             $(".btn").hide();

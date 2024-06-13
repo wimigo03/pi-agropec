@@ -22,9 +22,7 @@ class CajaVentaController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('caja.venta.index',Auth::user()->empresa_id);
         }
@@ -103,7 +101,7 @@ class CajaVentaController extends Controller
                 $codigo = $empresa->alias . '-' . $gestion . '-' . (str_pad($numero,3,"0",STR_PAD_LEFT));
                 $datos = [
                     'empresa_id' => $empresa->id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'sucursal_id' => $request->sucursal_id,
                     'user_id' => $user->id,
                     'cargo_id' => $user != null ? $user->id : null,

@@ -20,32 +20,26 @@ class BalanceGeneralController extends Controller
     const ICONO = 'fa-solid fa-tag fa-fw';
     const INDEX = 'BALANCE GENERAL';
 
-    public function indexAfter()
-    {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
-        if(count($empresas) == 1 && Auth::user()->id != 1){
-            return redirect()->route('balance.general.index',Auth::user()->empresa_id);
-        }
-        return view('balance_general.indexAfter', compact('empresas'));
-    }
-
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $show = '0';
-        return view('balance_general.index', compact('icono','header','empresa','show'));
+        return view('balance_general.index', compact('icono','header','empresas','show'));
     }
 
     public function search(Request $request)
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $fecha_i = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_i)));
-        $fecha_f = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_f)));
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
+        $fecha_i = date('Y-m-d', strtotime($request->fecha_i));
+        $fecha_f = date('Y-m-d', strtotime($request->fecha_f));
 
         if($fecha_i > $fecha_f){
             return redirect()->back()->with('info_message', '[LA FECHA INICIAL NO PUEDE SER MAYOR A LA FECHA FINAL]')->withInput();
@@ -68,7 +62,7 @@ class BalanceGeneralController extends Controller
                 $total = $estado_resultado['total'];
                 $totales = $estado_resultado['totales'];
                 $show = '1';
-                return view('balance_general.index', compact('icono','header','empresa','ingresos','costos','gastos','nroMaxColumna','total','totales','show'));
+                return view('balance_general.index', compact('icono','header','empresas','empresa','ingresos','costos','gastos','nroMaxColumna','total','totales','show'));
         } finally{
             ini_restore('memory_limit');
             ini_restore('max_execution_time');
@@ -164,8 +158,8 @@ class BalanceGeneralController extends Controller
 
     public function excel(Request $request)
     {
-        $fecha_i = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_i)));
-        $fecha_f = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_f)));
+        $fecha_i = date('Y-m-d', strtotime($request->fecha_i));
+        $fecha_f = date('Y-m-d', strtotime($request->fecha_f));
 
         if($fecha_i > $fecha_f){
             return redirect()->back()->with('info_message', '[LA FECHA INICIAL NO PUEDE SER MAYOR A LA FECHA FINAL]')->withInput();
@@ -199,8 +193,8 @@ class BalanceGeneralController extends Controller
 
     public function pdf(Request $request)
     {
-        $fecha_i = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_i)));
-        $fecha_f = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha_f)));
+        $fecha_i = date('Y-m-d', strtotime($request->fecha_i));
+        $fecha_f = date('Y-m-d', strtotime($request->fecha_f));
 
         if($fecha_i > $fecha_f){
             return redirect()->back()->with('info_message', '[LA FECHA INICIAL NO PUEDE SER MAYOR A LA FECHA FINAL]')->withInput();

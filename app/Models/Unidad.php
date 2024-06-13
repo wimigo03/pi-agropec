@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Empresa;
 
 class Unidad extends Model
@@ -14,7 +14,7 @@ class Unidad extends Model
     protected $table = 'unidades';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'nombre',
         'codigo',
         'tipo',
@@ -33,18 +33,18 @@ class Unidad extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
         }
     }
 
     public function getTipoCategoriaAttribute(){
         switch ($this->tipo) {
-            case '1': 
+            case '1':
                 return "MENU";
-            case '2': 
+            case '2':
                 return "INSUMO";
         }
     }
@@ -54,7 +54,7 @@ class Unidad extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function scopeByEmpresa($query, $empresa_id){

@@ -12,7 +12,8 @@ use App\Models\TipoCambio;
 use App\Models\Moneda;
 use App\Models\User;
 use App\Models\Sucursal;
-use App\Models\CentroContable;
+use App\Models\Centro;
+use App\Models\SubCentro;
 use App\Models\PlanCuenta;
 use App\Models\PlanCuentaAuxiliar;
 use Auth;
@@ -29,28 +30,33 @@ class ComprobanteFController extends Controller
     const SHOW = 'DETALLE DEL COMPROBANTE';
     const EDITAR = 'MODIFICAR COMPROBANTE';
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $estados = ComprobanteF::ESTADOS;
         $tipos = ComprobanteF::TIPOS;
         $comprobantes = ComprobanteF::query()
-                                    ->byEmpresa($empresa_id)
+                                    ->byPiCliente(Auth::user()->pi_cliente_id)
                                     ->orderBy('id','desc')
                                     ->paginate(10);
-        return view('comprobantesf.index', compact('icono','header','empresa','estados','tipos','comprobantes'));
+        return view('comprobantesf.index', compact('icono','header','empresas','estados','tipos','comprobantes'));
     }
 
     public function search(Request $request)
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($request->empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $estados = ComprobanteF::ESTADOS;
         $tipos = ComprobanteF::TIPOS;
         $comprobantes = ComprobanteF::query()
+                                    ->byPiCliente(Auth::user()->pi_cliente_id)
                                     ->byEmpresa($request->empresa_id)
                                     ->byEntreFechas($request->fecha_i, $request->fecha_f)
                                     ->byNroComprobante($request->nro_comprobante)
@@ -60,35 +66,107 @@ class ComprobanteFController extends Controller
                                     ->byMonto($request->monto)
                                     ->orderBy('id','desc')
                                     ->paginate(10);
-        return view('comprobantesf.index', compact('icono','header','empresa','estados','tipos','comprobantes'));
+        return view('comprobantesf.index', compact('icono','header','empresas','estados','tipos','comprobantes'));
 
     }
 
-    public function create($empresa_id)
+    public function create()
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $empresa = Empresa::find($empresa_id);
-        $tipo_cambio = TipoCambio::where('fecha',date('Y-m-d'))->where('estado','1')->first();
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
+        $tipo_cambio = TipoCambio::where('pi_cliente_id',Auth::user()->pi_cliente_id)->where('fecha',date('Y-m-d'))->where('estado','1')->first();
         if($tipo_cambio == null){
-            return redirect()->route('tipo.cambio.index',$empresa_id)->with('info_message', 'Antes de continuar se debe registrar un Tipo de Cambio para la fecha actual.');
+            return redirect()->route('tipo.cambio.index')->with('info_message', 'Antes de continuar se debe registrar un Tipo de Cambio para la fecha actual.');
         }
         $monedas = Moneda::where('estado','1')->orderBy('id','desc')->pluck('nombre','id');
         $tipos = ComprobanteF::TIPOS;
-        $centros_contables = CentroContable::where('empresa_id',$empresa_id)->pluck('nombre','id');
-        $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
+        return view('comprobantesf.create', compact('icono','header','empresas','tipo_cambio','monedas','tipos'));
+    }
+
+    public function getCentros(Request $request){
+        try{
+            $input = $request->all();
+            $id = $input['id'];
+            $centros = DB::table('centros')
+                            ->where('empresa_id',$id)
+                            ->where('estado','1')
+                            ->select('nombre','id')
+                            ->get()
+                            ->toJson();
+            if($centros){
+                return response()->json([
+                    'centros' => $centros
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getPlanCuentas(Request $request){
+        try{
+            $input = $request->all();
+            $id = $input['id'];
+            $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
                                         ->where('detalle','1')
                                         ->where('estado','1')
-                                        ->where('empresa_id',$empresa_id)
-                                        ->pluck('cuenta_contable','id');
-        $plan_cuentas_auxiliares = PlanCuentaAuxiliar::where('estado','1')->pluck('nombre','id');
-        return view('comprobantesf.create', compact('icono','header','empresa','tipo_cambio','monedas','tipos','centros_contables','plan_cuentas','plan_cuentas_auxiliares'));
+                                        ->where('empresa_id',$id)
+                                        ->get()
+                                        ->toJson();
+            if($plan_cuentas){
+                return response()->json([
+                    'plan_cuentas' => $plan_cuentas
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getPlanCuentasAuxiliares(Request $request){
+        try{
+            $input = $request->all();
+            $id = $input['id'];
+            $plan_cuentas_auxiliares = PlanCuentaAuxiliar::select('nombre','id')
+                                                            ->where('estado','1')
+                                                            ->where('empresa_id',$id)
+                                                            ->get()
+                                                            ->toJson();
+            if($plan_cuentas_auxiliares){
+                return response()->json([
+                    'plan_cuentas_auxiliares' => $plan_cuentas_auxiliares
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function getSubCentros(Request $request){
+        try{
+            $input = $request->all();
+            $id = $input['id'];
+            $subcentros = DB::table('sub_centros')
+                            ->where('centro_id',$id)
+                            ->where('estado','1')
+                            ->select('nombre','id')
+                            ->get()
+                            ->toJson();
+            if($subcentros){
+                return response()->json([
+                    'subcentros' => $subcentros
+                ]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 
     public function store(Request $request)
     {
-        $fecha = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha)));
-        $tipo_cambio = TipoCambio::where('fecha',$fecha)->first();
+        $fecha = date('Y-m-d', strtotime($request->fecha));
+        $tipo_cambio = TipoCambio::where('pi_cliente_id',Auth::user()->pi_cliente_id)->where('fecha',$fecha)->first();
         if($tipo_cambio == null){
             return redirect()->back()->with('info_message', 'No existe un tipo de cambio para la [FECHA] seleccionada...')->withInput();
         }
@@ -108,7 +186,7 @@ class ComprobanteFController extends Controller
             $nro_comprobante = $codigo . '-' . $date . '-' . (str_pad($numero,3,"0",STR_PAD_LEFT));
             $datos = [
                 'empresa_id' => $empresa->id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'tipo_cambio_id' => $tipo_cambio->id,
                 'user_id' => $user != null ? $user->id : 1,
                 'cargo_id' => $user != null ? $user->cargo_id : null,
@@ -125,23 +203,25 @@ class ComprobanteFController extends Controller
                 'monto' => $request->monto_total,
                 'moneda' => $moneda->alias,
                 'estado' => '1',
+                'creado' => date('Y-m-d')
             ];
             $comprobante = ComprobanteF::create($datos);
 
-            if(isset($request->centro_contable_id)){
+            if(isset($request->centro_id)){
                 $cont = 0;
-                while($cont < count($request->centro_contable_id)){
+                while($cont < count($request->centro_id)){
                     $datos_detalle = [
                         'comprobantef_id' => $comprobante->id,
                         'empresa_id' => $empresa->id,
-                        'cliente_id' => $empresa->cliente_id,
+                        'pi_cliente_id' => $empresa->pi_cliente_id,
                         'tipo_cambio_id' => $tipo_cambio->id,
                         'user_id' => $user != null ? $user->id : 1,
                         'cargo_id' => $user != null ? $user->cargo_id : null,
                         'moneda_id' => $moneda->id,
                         'pais_id' => $moneda->pais_id,
                         'plan_cuenta_id' => $request->plan_cuenta_id[$cont],
-                        'centro_contable_id' => $request->centro_contable_id[$cont],
+                        'centro_id' => $request->centro_id[$cont],
+                        'sub_centro_id' => $request->sub_centro_id[$cont],
                         'plan_cuenta_auxiliar_id' => $request->auxiliar_id[$cont],
                         'glosa' => $request->glosa[$cont],
                         'debe' => floatval(str_replace(",", "", $request->debe[$cont])),
@@ -155,7 +235,7 @@ class ComprobanteFController extends Controller
                 }
             }
 
-            return redirect()->route('comprobantef.index',['empresa_id' => $request->empresa_id])->with('success_message', 'Se agregó el comprobante Nro, ' . $comprobante->nro_comprobante . '...');
+            return redirect()->route('comprobantef.index')->with('success_message', 'Se agregó el comprobante Nro, ' . $comprobante->nro_comprobante . '...');
         } catch (ValidationException $e) {
             return redirect()->route('comprobantef.create',$request->empresa_id)
                 ->withErrors($e->validator->errors())
@@ -249,15 +329,22 @@ class ComprobanteFController extends Controller
         $comprobante_detalles = ComprobanteFDetalle::where('comprobantef_id',$comprobante_id)->where('estado','1')->orderBy('id','desc')->get();
         $total_debe = $comprobante_detalles->sum('debe');
         $total_haber = $comprobante_detalles->sum('haber');
-        $empresa = Empresa::find($comprobante->empresa_id);
-        $centros_contables = CentroContable::where('empresa_id',$comprobante->empresa_id)->pluck('nombre','id');
+        $centros = Centro::where('empresa_id',$comprobante->empresa_id)->pluck('nombre','id');
         $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
                                         ->where('detalle','1')
                                         ->where('estado','1')
                                         ->where('empresa_id',$comprobante->empresa_id)
                                         ->pluck('cuenta_contable','id');
-        $plan_cuentas_auxiliares = PlanCuentaAuxiliar::where('estado','1')->pluck('nombre','id');
-        return view('comprobantesf.editar', compact('icono','header','comprobante','comprobante_detalles','total_debe','total_haber','empresa','centros_contables','plan_cuentas','plan_cuentas_auxiliares'));
+        $plan_cuentas = PlanCuenta::select(DB::raw('concat(codigo," ",nombre) as cuenta_contable'),'id')
+                                        ->where('detalle','1')
+                                        ->where('estado','1')
+                                        ->where('empresa_id',$comprobante->empresa_id)
+                                        ->pluck('cuenta_contable','id');
+        $plan_cuentas_auxiliares = PlanCuentaAuxiliar::query()
+                                                        ->byEmpresa($comprobante->empresa_id)
+                                                        ->where('estado','1')
+                                                        ->pluck('nombre','id');
+        return view('comprobantesf.editar', compact('icono','header','comprobante','comprobante_detalles','total_debe','total_haber','centros','plan_cuentas','plan_cuentas_auxiliares'));
     }
 
     public function eliminarRegistro($id)
@@ -287,20 +374,21 @@ class ComprobanteFController extends Controller
                 return redirect()->back()->with('info_message', 'No existe un tipo de cambio para la [FECHA] seleccionada...')->withInput();
             }
             $moneda = Moneda::where('id',$comprobante->moneda_id)->first();
-            if(isset($request->centro_contable_id)){
-                while($cont < count($request->centro_contable_id)){
+            if(isset($request->centro_id)){
+                while($cont < count($request->centro_id)){
                     $datos_detalle = [
                         'comprobantef_id' => $comprobante->id,
                         'comprobante_id' => $comprobante->comprobante_id,
                         'empresa_id' => $empresa->id,
-                        'cliente_id' => $empresa->cliente_id,
+                        'pi_cliente_id' => $empresa->pi_cliente_id,
                         'tipo_cambio_id' => $tipo_cambio->id,
                         'user_id' => $user != null ? $user->id : 1,
                         'cargo_id' => $user != null ? $user->cargo_id : null,
                         'moneda_id' => $moneda->id,
                         'pais_id' => $moneda->pais_id,
                         'plan_cuenta_id' => $request->plan_cuenta_id[$cont],
-                        'centro_contable_id' => $request->centro_contable_id[$cont],
+                        'centro_id' => $request->centro_id[$cont],
+                        'sub_centro_id' => $request->sub_centro_id[$cont],
                         'plan_cuenta_auxiliar_id' => $request->auxiliar_id[$cont],
                         'glosa' => $request->glosa[$cont],
                         'debe' => floatval(str_replace(",", "", $request->debe[$cont])),
@@ -351,7 +439,7 @@ class ComprobanteFController extends Controller
                 $datos = [
                     'comprobante_id' => $comprobante->id,
                     'empresa_id' => $comprobante->empresa_id,
-                    'cliente_id' => $comprobante->cliente_id,
+                    'pi_cliente_id' => $comprobante->pi_cliente_id,
                     'tipo_cambio_id' => $comprobante->tipo_cambio_id,
                     'user_id' => $comprobante->user_id,
                     'cargo_id' => $comprobante->cargo_id,
@@ -367,7 +455,8 @@ class ComprobanteFController extends Controller
                     'concepto' => $comprobante->concepto,
                     'monto' => $comprobante->monto,
                     'moneda' => $comprobante->moneda,
-                    'estado' => '1'
+                    'estado' => '1',
+                    'creado' => date('Y-m-d')
                 ];
                 $comprobantef = ComprobanteF::create($datos);
 
@@ -377,13 +466,14 @@ class ComprobanteFController extends Controller
                         'comprobantef_id' => $comprobantef->id,
                         'comprobante_id' => $comprobante->id,
                         'empresa_id' => $comprobante_detalle->empresa_id,
-                        'cliente_id' => $comprobante_detalle->cliente_id,
+                        'pi_cliente_id' => $comprobante_detalle->pi_cliente_id,
                         'tipo_cambio_id' => $comprobante_detalle->tipo_cambio_id,
                         'user_id' => $comprobante_detalle->user_id,
                         'cargo_id' => $comprobante_detalle->cargo_id,
                         'moneda_id' => $comprobante_detalle->moneda_id,
                         'pais_id' => $comprobante_detalle->pais_id,
-                        'centro_contable_id' => $comprobante_detalle->centro_contable_id,
+                        'centro_id' => $comprobante_detalle->centro_id,
+                        'sub_centro_id' => $comprobante_detalle->sub_centro_id,
                         'plan_cuenta_id' => $comprobante_detalle->plan_cuenta_id,
                         'plan_cuenta_auxiliar_id' => $comprobante_detalle->plan_cuenta_auxiliar_id,
                         'glosa' => $comprobante_detalle->glosa,
@@ -411,12 +501,12 @@ class ComprobanteFController extends Controller
 
     public function crearEncabezadoComprobante($datos_comprobante)
     {
-        $fecha_comprobante = date('Y-m-d', strtotime(str_replace('/', '-', $datos_comprobante['fecha'])));
+        $fecha_comprobante = date('Y-m-d', strtotime($datos_comprobante['fecha']));
         $ultimo_comprobante = $this->ultimoComprobante($datos_comprobante['tipo'], $datos_comprobante['empresa_id'], $fecha_comprobante);
         $datos = [
             'comprobante_id' => $datos_comprobante['comprobante_id'],
             'empresa_id' => $datos_comprobante['empresa_id'],
-            'cliente_id' => $datos_comprobante['cliente_id'],
+            'pi_cliente_id' => $datos_comprobante['pi_cliente_id'],
             'tipo_cambio_id' => $datos_comprobante['tipo_cambio_id'],
             'user_id' => $datos_comprobante['user_id'],
             'cargo_id' => $datos_comprobante['cargo_id'],
@@ -432,7 +522,8 @@ class ComprobanteFController extends Controller
             'concepto' => $datos_comprobante['concepto'],
             'monto' => $datos_comprobante['monto'],
             'moneda' => $datos_comprobante['moneda'],
-            'estado' => $datos_comprobante['estado']
+            'estado' => $datos_comprobante['estado'],
+            'creado' => date('Y-m-d')
         ];
         $comprobante = ComprobanteF::create($datos);
         return $comprobante;

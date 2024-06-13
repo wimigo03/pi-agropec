@@ -12,7 +12,7 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Empresa;
 use App\Models\Cargo;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use DB;
 use Auth;
 
@@ -33,7 +33,7 @@ class User extends Authenticatable
     protected $fillable = [
         'cargo_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'name',
         'username',
         'email',
@@ -78,16 +78,16 @@ class User extends Authenticatable
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '2': 
+            case '2':
                 return "NO HABILITADO";
         }
     }
 
     public function getCargoHeaderAttribute(){
         if($this->id == 1){
-            return 'SUPER ADMINISTRADOR';    
+            return 'SUPER ADMINISTRADOR';
         }
         $cargo = DB::table('users as a')->join('cargos as b','a.cargo_id','b.id')->where('a.id',Auth::user()->id)->first()->nombre;
         return $cargo;
@@ -102,25 +102,25 @@ class User extends Authenticatable
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function scopeByEmpresa($query, $empresa_id){
         if($empresa_id){
             return $query->where('empresa_id', $empresa_id);
-        }  
+        }
     }
 
     public function scopeByCargo($query, $cargo_id){
         if($cargo_id){
             return $query->where('cargo_id', $cargo_id);
-        }  
+        }
     }
 
     /*public function scopeByRole($query, $role_id){
         if($role_id){
             return $query->where('role_id', $role_id);
-        }  
+        }
     }*/
 
     public function scopeByRole($query, $role_id){
@@ -137,24 +137,24 @@ class User extends Authenticatable
     public function scopeByNombre($query, $nombre){
         if($nombre){
             return $query->where('name', 'like', '%'.$nombre.'%');
-        }  
+        }
     }
 
     public function scopeByUsername($query, $username){
         if($username){
             return $query->where('username', 'like', '%'.$username.'%');
-        }  
+        }
     }
 
     public function scopeByEmail($query, $email){
         if($email){
             return $query->where('email', 'like', '%'.$email.'%');
-        }  
+        }
     }
 
     public function scopeByEstado($query, $estado){
         if($estado){
             return $query->where('estado', $estado);
-        }  
+        }
     }
 }

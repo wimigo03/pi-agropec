@@ -1,10 +1,14 @@
 <?php
 
-Route::prefix('comprobantef')->name('comprobantef.')->middleware(['auth:sanctum',config('jetstream.auth_session'),'verified',])->group(function () {
+Route::prefix('comprobantesf')->name('comprobantef.')->middleware(['auth:sanctum',config('jetstream.auth_session'),'verified',])->group(function () {
     //Route::get('/index-after', 'ComprobanteController@indexAfter')->name('indexAfter')->middleware('can:comprobante.index');
-    Route::get('/{empresa_id}', 'ComprobanteFController@index')->name('index')->middleware('can:comprobantef.index');
-    Route::get('/search/{empresa_id}', 'ComprobanteFController@search')->name('search')->middleware('can:comprobantef.index');
-    Route::get('/create/{empresa_id}', 'ComprobanteFController@create')->name('create')->middleware('can:comprobantef.create');
+    Route::get('/', 'ComprobanteFController@index')->name('index')->middleware('can:comprobantef.index');
+    Route::get('/search', 'ComprobanteFController@search')->name('search')->middleware('can:comprobantef.index');
+    Route::get('/create', 'ComprobanteFController@create')->name('create')->middleware('can:comprobantef.create');
+    Route::get('/get_centros', 'ComprobanteFController@getCentros')->name('get.centros')->middleware('can:comprobantef.create');
+    Route::get('/get_plancuentas', 'ComprobanteFController@getPlanCuentas')->name('get.plancuentas')->middleware('can:comprobantef.create');
+    Route::get('/get_plancuentasauxiliares', 'ComprobanteFController@getPlanCuentasAuxiliares')->name('get.plancuentasauxiliares')->middleware('can:comprobantef.create');
+    Route::get('/get_subcentros', 'ComprobanteFController@getSubCentros')->name('get.subcentros')->middleware('can:comprobantef.create');
     Route::get('/tiene_auxiliar/{plan_cuenta_id}', 'ComprobanteFController@tieneAuxiliar')->name('tiene_auxiliar')->middleware('can:comprobantef.create');
     Route::post('/store', 'ComprobanteFController@store')->name('store')->middleware('can:comprobantef.create');
     Route::get('/show/{id}', 'ComprobanteFController@show')->name('show')->middleware('can:comprobantef.show');

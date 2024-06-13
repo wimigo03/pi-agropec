@@ -5,7 +5,7 @@
     <div class="form-group row">
         <div class="col-md-12 text-right">
             <button class="btn btn-outline-primary font-verdana" type="button" onclick="cancelar();">
-                &nbsp;<i class="fas fa-times"></i>&nbsp;Ir a listado
+                &nbsp;<i class="fas fa-times fa-fw"></i>&nbsp;Ir a listado
             </button>
             <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
         </div>
@@ -29,9 +29,7 @@
         }
 
         function cancelar(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('asiento.automatico.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('asiento.automatico.index') }}";
             window.location.href = url;
         }
     </script>

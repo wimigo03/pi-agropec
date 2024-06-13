@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Comprobante;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\TipoCambio;
 use App\Models\Sucursal;
 use App\Models\User;
@@ -24,7 +24,7 @@ class ComprobanteF extends Model
     protected $fillable = [
         'comprobante_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'tipo_cambio_id',
         'user_id',
         'cargo_id',
@@ -41,7 +41,8 @@ class ComprobanteF extends Model
         'concepto',
         'monto',
         'moneda',
-        'estado'
+        'estado',
+        'creado'
     ];
 
     const ESTADOS = [
@@ -49,6 +50,11 @@ class ComprobanteF extends Model
         '2' => 'APROBADO',
         '3' => 'ANULADO',
         '4' => 'ELIMINADO',
+    ];
+
+    const ESTADOS_SEARCH = [
+        '1' => 'PENDIENTES',
+        '2' => 'APROBADOS'
     ];
 
     const TIPOS = [
@@ -85,7 +91,7 @@ class ComprobanteF extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function user(){
@@ -96,6 +102,12 @@ class ComprobanteF extends Model
         return $this->belongsTo(Moneda::class,'moneda_id','id');
     }
 
+    public function scopeByPiCliente($query, $pi_cliente_id){
+        if($pi_cliente_id){
+            return $query->where('pi_cliente_id', $pi_cliente_id);
+        }
+    }
+
     public function scopeByEmpresa($query, $empresa_id){
         if($empresa_id)
             return $query->where('empresa_id', $empresa_id);
@@ -103,8 +115,8 @@ class ComprobanteF extends Model
 
     public function scopeByEntreFechas($query, $from, $to){
         if ($from && $to) {
-            $from = date('Y-m-d 00:00:00', strtotime(str_replace('/', '-', $from)));
-            $to = date('Y-m-d 23:59:59', strtotime(str_replace('/', '-', $to)));
+            $from = date('Y-m-d 00:00:00', strtotime($from));
+            $to = date('Y-m-d 23:59:59', strtotime($to));
             return $query->where(
                 'fecha','>=',Carbon::parse($from)->toDateString()
             )

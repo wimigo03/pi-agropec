@@ -1,8 +1,9 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 table-responsive px-1">
         <table class="table display responsive table-striped hover-orange">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
+                    <td class="text-center p-1"><b>EMPRESA</b></td>
                     <td class="text-center p-1"><b>NOMBRE</b></td>
                     <td class="text-center p-1"><b>ORIGEN</b></td>
                     <td class="text-center p-1"><b>INDENTIFICADOR</b></td>
@@ -16,6 +17,7 @@
             <tbody>
                 @foreach ($plan_cuentas_auxiliares as $datos)
                     <tr class="font-roboto-11">
+                        <td class="text-left p-1">{{ $datos->empresa->nombre_comercial }}</td>
                         <td class="text-left p-1">{{ $datos->nombre }}</td>
                         <td class="text-left p-1">{{ $datos->class_name }}</td>
                         <td class="text-left p-1">{{ $datos->class_name_id }}</td>
@@ -27,26 +29,28 @@
                         </td>
                         @canany(['plan.cuentas.auxiliar.habilitar','plan.cuentas.auxiliar.editar'])
                             <td class="text-center p-1">
-                                @if($datos->status == "HABILITADO")
-                                    <span class="tts:left tts-slideIn tts-custom" aria-label="Deshabilitar" style="cursor: pointer;">
-                                        <a href="{{ route('plan_cuentas.auxiliar.deshabilitar',$datos->id) }}" class="badge-with-padding badge badge-danger">
-                                            <i class="fas fa-lg fa-arrow-alt-circle-down"></i>
-                                        </a>
-                                    </span>
-                                @else
-                                    <span class="tts:left tts-slideIn tts-custom" aria-label="Habilitar" style="cursor: pointer;">
-                                        <a href="{{ route('plan_cuentas.auxiliar.habilitar',$datos->id) }}" class="badge-with-padding badge badge-success">
-                                            <i class="fas fa-lg fa-arrow-alt-circle-up"></i>
-                                        </a>
-                                    </span>
-                                @endif
-                                @can('plan.cuentas.auxiliar.editar')
-                                    <span class="tts:left tts-slideIn tts-custom" aria-label="Modificar" style="cursor: pointer;">
-                                        <a href="{{ route('plan_cuentas.auxiliar.editar',$datos->id) }}" class="badge-with-padding badge badge-warning">
-                                            <i class="fas fa-lg fa-edit text-white"></i>
-                                        </a>
-                                    </span>
-                                @endcan
+                                <div class="d-flex justify-content-center">
+                                    @if($datos->status == "HABILITADO")
+                                        <span class="tts:left tts-slideIn tts-custom mr-1" aria-label="Deshabilitar" style="cursor: pointer;">
+                                            <a href="{{ route('plan_cuentas.auxiliar.deshabilitar',$datos->id) }}" class="badge-with-padding badge badge-danger">
+                                                <i class="fas fa-lg fa-arrow-alt-circle-down"></i>
+                                            </a>
+                                        </span>
+                                    @else
+                                        <span class="tts:left tts-slideIn tts-custom mr-1" aria-label="Habilitar" style="cursor: pointer;">
+                                            <a href="{{ route('plan_cuentas.auxiliar.habilitar',$datos->id) }}" class="badge-with-padding badge badge-success">
+                                                <i class="fas fa-lg fa-arrow-alt-circle-up"></i>
+                                            </a>
+                                        </span>
+                                    @endif
+                                    @can('plan.cuentas.auxiliar.editar')
+                                        <span class="tts:left tts-slideIn tts-custom" aria-label="Modificar" style="cursor: pointer;">
+                                            <a href="{{ route('plan_cuentas.auxiliar.editar',$datos->id) }}" class="badge-with-padding badge badge-warning">
+                                                <i class="fas fa-lg fa-edit text-white"></i>
+                                            </a>
+                                        </span>
+                                    @endcan
+                                </div>
                             </td>
                         @endcanany
                     </tr>

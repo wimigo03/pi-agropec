@@ -168,7 +168,7 @@ class PrecioProductoController extends Controller
                     $datosPrecioProducto = [
                         'producto_id' => $precio_producto->producto_id,
                         'empresa_id' => $precio_producto->empresa_id,
-                        'cliente_id' => $precio_producto->cliente_id,
+                        'pi_cliente_id' => $precio_producto->pi_cliente_id,
                         'categoria_id' => $precio_producto->categoria_id,
                         'categoria_master_id' => $precio_producto->categoria_master_id,
                         'plan_cuenta_id' => $precio_producto->plan_cuenta_id,
@@ -201,7 +201,7 @@ class PrecioProductoController extends Controller
                             $datos_precio_producto = [
                                 'producto_id' => $precio_producto->producto_id,
                                 'empresa_id' => $precio_producto->empresa_id,
-                                'cliente_id' => $precio_producto->cliente_id,
+                                'pi_cliente_id' => $precio_producto->pi_cliente_id,
                                 'categoria_id' => $precio_producto->categoria_id,
                                 'categoria_master_id' => $precio_producto->categoria_master_id,
                                 'plan_cuenta_id' => $precio_producto->plan_cuenta_id,

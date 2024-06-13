@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display hover-orange responsive table-striped">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-left p-1"><b>ID</b></td>
                     <td class="text-left p-1"><b>SUCURSAL</b></td>
                     <td class="text-left p-1"><b>ZONA</b></td>
@@ -57,7 +57,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="row font-roboto-12">
+        <div class="row font-roboto-11">
             <div class="col-md-6">
                 <p class="text- muted">Mostrando
                     <strong>{{$mesas->count()}}</strong> registros de

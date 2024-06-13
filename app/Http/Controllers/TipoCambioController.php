@@ -18,9 +18,7 @@ class TipoCambioController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('tipo.cambio.index',Auth::user()->empresa_id);
         }
@@ -46,7 +44,7 @@ class TipoCambioController extends Controller
                     //echo date('Y-m-d', $currentTimestamp) . '<br>';
                     $datos = [
                         'empresa_id' => 1,
-                        'cliente_id' => 1,
+                        'pi_cliente_id' => 1,
                         'fecha' => date('Y-m-d', $currentTimestamp),
                         'ufv' => '1',
                         'dolar_oficial' => '6.96',
@@ -64,48 +62,46 @@ class TipoCambioController extends Controller
         }
     }
 
-    public function index($empresa_id)
+    public function index()
     {
         //if(Auth::user()->id == 1){
             //$this->completar_fechas();
         //}
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
         $estados = TipoCambio::ESTADOS;
         $tipo_cambios = TipoCambio::query()
-                                ->byEmpresa($empresa_id)
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
                                 ->orderBy('id','desc')
                                 ->paginate(10);
-        return view('tipo_cambios.index', compact('icono','header','empresa','estados','tipo_cambios'));
+        return view('tipo_cambios.index', compact('icono','header','estados','tipo_cambios'));
     }
 
     public function search(Request $request)
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($request->empresa_id);
         $estados = TipoCambio::ESTADOS;
         $tipo_cambios = TipoCambio::query()
-                                ->byEmpresa($request->empresa_id)
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
                                 ->byEntreFechas($request->fecha_i,$request->fecha_f)
                                 ->orderBy('id','desc')
                                 ->paginate(10);
-        return view('tipo_cambios.index', compact('icono','header','empresa','estados','tipo_cambios'));
+        return view('tipo_cambios.index', compact('icono','header','estados','tipo_cambios'));
 
     }
 
-    public function create($empresa_id)
+    public function create()
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $empresa = Empresa::find($empresa_id);
-        $cambio_anterior = TipoCambio::where('fecha','<',date('Y-m-d'))
-                                        ->where('empresa_id',$empresa_id)
+        $cambio_anterior = TipoCambio::query()
+                                        ->byPiCliente(Auth::user()->pi_cliente_id)
+                                        ->where('fecha','<',date('Y-m-d'))
                                         ->where('estado','1')
                                         ->orderBy('fecha','desc')
                                         ->first();
-        return view('tipo_cambios.create', compact('icono','header','empresa','cambio_anterior'));
+        return view('tipo_cambios.create', compact('icono','header','cambio_anterior'));
     }
 
     public function store(Request $request)
@@ -118,19 +114,17 @@ class TipoCambioController extends Controller
             'venta' => 'required'
         ]);
 
-        $fecha = date('Y-m-d', strtotime(str_replace('/', '-', $request->fecha)));
+        $fecha = date('Y-m-d', strtotime($request->fecha));
         if($fecha > date('Y-m-d')){
             return redirect()->back()->with('info_message', 'La fecha introducida es mayor a la fecha actual.')->withInput();
         }
-        $tipo_cambio = TipoCambio::where('fecha',$fecha)->first();
+        $tipo_cambio = TipoCambio::query()->byPiCliente(Auth::user()->pi_cliente_id)->where('fecha',$fecha)->first();
         if($tipo_cambio != null){
             return redirect()->back()->with('info_message', 'Ya existe un tipo de cambio para la [FECHA] seleccionada...')->withInput();
         }
         try{
-            $empresa = Empresa::find($request->empresa_id);
             $datos = [
-                'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => Auth::user()->pi_cliente_id,
                 'fecha' => $fecha,
                 'ufv' => floatval(str_replace(",", "", $request->ufv)),
                 'dolar_oficial' => floatval(str_replace(",", "", $request->oficial)),
@@ -140,9 +134,9 @@ class TipoCambioController extends Controller
             ];
             $cambio = TipoCambio::create($datos);
 
-            return redirect()->route('tipo.cambio.index',['empresa_id' => $request->empresa_id])->with('success_message', 'Se agregó un tipo de cambio correctamente.');
+            return redirect()->route('tipo.cambio.index')->with('success_message', 'Se agregó un tipo de cambio correctamente.');
         } catch (ValidationException $e) {
-            return redirect()->route('tipo.cambio.create',$request->empresa_id)
+            return redirect()->route('tipo.cambio.create')
                 ->withErrors($e->validator->errors())
                 ->withInput();
         }
@@ -151,14 +145,18 @@ class TipoCambioController extends Controller
     public function editar($id)
     {
         $tipo_cambio = TipoCambio::find($id);
-        $comprobantes = Comprobante::select('id')->where('fecha',$tipo_cambio->fecha)->whereIn('estado',['1','2'])->first();
+        $comprobantes = Comprobante::query()
+                                    ->byPiCliente(Auth::user()->pi_cliente_id)
+                                    ->select('id')
+                                    ->where('fecha',$tipo_cambio->fecha)
+                                    ->whereIn('estado',['1','2'])
+                                    ->first();
         if($comprobantes != null){
             return redirect()->back()->with('info_message', '[ACCION NO PERMITIDA. EXISTEN COMPROBANTES PROCESADOS.]')->withInput();
         }
         $icono = self::ICONO;
         $header = self::EDITAR;
-        $empresa = Empresa::find($tipo_cambio->empresa_id);
-        return view('tipo_cambios.editar', compact('tipo_cambio','icono','header','empresa'));
+        return view('tipo_cambios.editar', compact('tipo_cambio','icono','header'));
     }
 
     public function update(Request $request)
@@ -179,9 +177,9 @@ class TipoCambioController extends Controller
             ];
             $tipo_cambio->update($datos);
 
-            return redirect()->route('tipo.cambio.index',['empresa_id' => $tipo_cambio->empresa_id])->with('info_message', 'La informacion fue actualizada.');
+            return redirect()->route('tipo.cambio.index')->with('info_message', 'La informacion fue actualizada.');
         } catch (ValidationException $e) {
-            return redirect()->route('tipo.cambio.create',$tipo_cambio->empresa_id)
+            return redirect()->route('tipo.cambio.create')
                 ->withErrors($e->validator->errors())
                 ->withInput();
         }

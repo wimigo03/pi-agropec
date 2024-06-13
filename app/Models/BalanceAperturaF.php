@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\User;
 use App\Models\Cargo;
 use App\Models\Comprobante;
@@ -21,7 +21,7 @@ class BalanceAperturaF extends Model
     protected $fillable = [
         'balance_apertura_id',
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'user_id',
         'cargo_id',
         'comprobante_id',
@@ -59,7 +59,7 @@ class BalanceAperturaF extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function user(){
@@ -80,6 +80,12 @@ class BalanceAperturaF extends Model
 
     public function tipo_cambio(){
         return $this->belongsTo(TipoCambio::class,'tipo_cambio_id','id');
+    }
+
+    public function scopeByPiCliente($query, $pi_cliente_id){
+        if($pi_cliente_id){
+            return $query->where('pi_cliente_id', $pi_cliente_id);
+        }
     }
 
     public function scopeByEmpresa($query, $empresa_id){

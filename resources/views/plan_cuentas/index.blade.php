@@ -20,9 +20,19 @@
     }
 </style>
 @section('content')
-    @if (isset($plan_de_cuentas))
-        @include('plan_cuentas.partials.treeview')
-    @endif
+    <div class="form-group row font-roboto-12 abs-center">
+        <div class="col-md-5 px-1 pl-1">
+            <form action="#" method="get" id="form_estructura">
+                <select name="empresa_id" id="empresa_id" class="form-control">
+                    <option value="">-</option>
+                    @foreach ($empresas as $index => $value)
+                        <option value="{{ $index }}" @if(isset($empresa_id) ? $empresa_id : request('empresa_id') == $index) selected @endif >{{ $value }}</option>
+                    @endforeach
+                </select>
+            </form>
+        </div>
+    </div>
+    @include('plan_cuentas.partials.treeview')
 @endsection
 @section('scripts')
     @parent
@@ -35,22 +45,27 @@
             $("#btn_modificar").hide();
 
             var plancuenta_id = $('#plancuenta_id').val();
+            var empresa_id = $("#empresa_id >option:selected").val();
+
             if ($('#plancuenta_id option[value="' + plancuenta_id + '"]').length !== 0) {
                 if($('#plancuenta_id').val() !== '#'){
-                    datosPlanCuenta(document.getElementById('plancuenta_id').value);
+                    datosPlanCuenta(empresa_id,document.getElementById('plancuenta_id').value);
                 }
             }
+
+            $('#empresa_id').select2({
+                theme: "bootstrap4",
+                placeholder: "--Empresa--",
+                width: '100%'
+            });
         });
 
         $('#empresa_id').change(function() {
             var id = $(this).val();
-            cargosByEmpresa(id);
+            planCuentasByEmpresa(id);
         });
 
-        function cargosByEmpresa(id){
-            $(".btn").hide();
-            $(".empresa-id-select-container").hide();
-            $(".spinner-btn").show();
+        function planCuentasByEmpresa(id){
             var status = '[]';
             var url = "{{ route('plan_cuentas.index',[':id',':status']) }}";
             url = url.replace(':id',id);
@@ -75,24 +90,27 @@
                 if (data.node && data.node.children.length > 0) {
                     $('#treeview').jstree('toggle_node', data.node);
                 }
-                datosPlanCuenta(data.node.id);
+                var empresa_id = $("#empresa_id >option:selected").val();
+                datosPlanCuenta(empresa_id,data.node.id);
             });
 
             $('#treeview').on('ready.jstree', function () {
                 $('#treeview').jstree('select_node', nodo_id);
                 if(nodo_id != ''){
-                    datosPlanCuenta(nodo_id);
+                    var empresa_id = $("#empresa_id >option:selected").val();
+                    datosPlanCuenta(empresa_id,nodo_id);
                 }
             });
         });
 
-        function datosPlanCuenta(id){
+        function datosPlanCuenta(empresa_id,id){
             $.ajax({
                 type: 'GET',
-                url: '/plan-cuentas/get_datos_plan_cuenta/'+id,
+                url: '/plan-cuentas/get_datos_plan_cuenta/'+empresa_id+'/'+id,
                 dataType: 'json',
                 data: {
-                    id: id
+                    id: id,
+                    empresa_id: empresa_id
                 },
                 success: function(json){
                     $('#plancuenta_id').val(json.id);
@@ -141,8 +159,6 @@
         }
 
         function create(){
-            $(".btns").hide();
-            $(".spinner-btn").show();
             var id = $("#empresa_id").val()
             var url = "{{ route('plan_cuentas.create',':id') }}";
             url = url.replace(':id',id);
@@ -150,37 +166,37 @@
         }
 
         function createSub(){
-            $(".btns").hide();
-            $(".spinner-btn").show();
+            var empresa_id = $("#empresa_id >option:selected").val();
             var id = $("#plancuenta_id").val();
-            var url = "{{ route('plan_cuentas.create_sub',':id') }}";
+            var url = "{{ route('plan_cuentas.create_sub',['empresa_id' => ':empresa_id', 'id' => ':id']) }}";
+            url = url.replace(':empresa_id',empresa_id);
             url = url.replace(':id',id);
             window.location.href = url;
         }
 
         function editar(){
-            $(".btns").hide();
-            $(".spinner-btn").show();
+            var empresa_id = $("#empresa_id >option:selected").val();
             var id = $("#plancuenta_id").val();
-            var url = "{{ route('plan_cuentas.editar',':id') }}";
+            var url = "{{ route('plan_cuentas.editar',['empresa_id' => ':empresa_id', 'id' => ':id']) }}";
+            url = url.replace(':empresa_id',empresa_id);
             url = url.replace(':id',id);
             window.location.href = url;
         }
 
         function habilitar(){
-            $(".btns").hide();
-            $(".spinner-btn").show();
+            var empresa_id = $("#empresa_id >option:selected").val();
             var id = $("#plancuenta_id").val();
-            var url = "{{ route('plan_cuentas.habilitar',':id') }}";
+            var url = "{{ route('plan_cuentas.habilitar',['empresa_id' => ':empresa_id', 'id' => ':id']) }}";
+            url = url.replace(':empresa_id',empresa_id);
             url = url.replace(':id',id);
             window.location.href = url;
         }
 
         function deshabilitar(){
-            $(".btns").hide();
-            $(".spinner-btn").show();
+            var empresa_id = $("#empresa_id >option:selected").val();
             var id = $("#plancuenta_id").val();
-            var url = "{{ route('plan_cuentas.deshabilitar',':id') }}";
+            var url = "{{ route('plan_cuentas.deshabilitar',['empresa_id' => ':empresa_id', 'id' => ':id']) }}";
+            url = url.replace(':empresa_id',empresa_id);
             url = url.replace(':id',id);
             window.location.href = url;
         }

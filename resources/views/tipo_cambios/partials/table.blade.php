@@ -1,5 +1,5 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display responsive table-striped">
             <thead>
                 <tr class="font-roboto-12">
@@ -19,7 +19,7 @@
                 @foreach ($tipo_cambios as $datos)
                     <tr class="font-roboto-12">
                         <td class="text-left p-1">{{ $datos->id }}</td>
-                        <td class="text-left p-1">{{ \Carbon\Carbon::parse($datos->fecha)->format('d/m/Y') }}</td>
+                        <td class="text-left p-1">{{ \Carbon\Carbon::parse($datos->fecha)->format('d-m-y') }}</td>
                         <td class="text-right p-1">{{ $datos->ufv }}</td>
                         <td class="text-right p-1">{{ $datos->dolar_oficial }}</td>
                         <td class="text-right p-1">{{ $datos->dolar_compra }}</td>

@@ -1,7 +1,7 @@
 <div class="form-group row">
     <div class="col-md-7 pr-1 font-verdana-bg">
-        <label for="cliente_id" class="d-inline">Cliente</label>
-        <input type="hidden" name="cliente_id" value="{{ $cargo->cliente_id }}">
+        <label for="pi_cliente_id" class="d-inline">Cliente</label>
+        <input type="hidden" name="pi_cliente_id" value="{{ $cargo->pi_cliente_id }}">
         <input type="text" value="{{ $cargo->cliente->razon_social }}" class="form-control font-verdana-bg" disabled>
     </div>
     <div class="col-md-5 pl-1 font-verdana-bg">

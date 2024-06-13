@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\Empresa;
 use App\Models\Categoria;
 
@@ -15,7 +15,7 @@ class Categoria extends Model
     protected $table = 'categorias';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'plan_cuenta_id',
         'moneda_id',
         'pais_id',
@@ -41,24 +41,24 @@ class Categoria extends Model
 
     public function getStatusAttribute(){
         switch ($this->estado) {
-            case '1': 
+            case '1':
                 return "HABILITADO";
-            case '0': 
+            case '0':
                 return "NO HABILITADO";
         }
     }
 
     public function getTipoProductoAttribute(){
         switch ($this->tipo) {
-            case '1': 
+            case '1':
                 return "MENU";
-            case '2': 
+            case '2':
                 return "INSUMOS";
         }
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function empresa(){

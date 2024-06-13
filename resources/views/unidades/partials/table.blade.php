@@ -1,8 +1,8 @@
 <div class="form-group row">
-    <div class="col-md-12">
+    <div class="col-md-12 px-1">
         <table class="table display {{--table-bordered--}} responsive table-striped">
             <thead>
-                <tr class="font-roboto-12">
+                <tr class="font-roboto-11">
                     <td class="text-left p-1"><b>NOMBRE</b></td>
                     <td class="text-left p-1"><b>CODIGO</b></td>
                     <td class="text-center p-1"><b>TIPO</b></td>
@@ -12,7 +12,7 @@
             </thead>
             <tbody>
                 @foreach ($unidades as $datos)
-                    <tr class="font-roboto-12">
+                    <tr class="font-roboto-11">
                         <td class="text-left p-1">{{ $datos->nombre }}</td>
                         <td class="text-left p-1">{{ $datos->codigo }}</td>
                         <td class="text-center p-1">{{ $datos->tipo_categoria }}</td>
@@ -45,7 +45,7 @@
                 @endforeach
             </tbody>
         </table>
-        <div class="d-flex justify-content-end font-roboto-12">
+        <div class="d-flex justify-content-end font-roboto-11">
             {!! $unidades->links() !!}
         </div>
     </div>

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Empresa;
-use App\Models\Cliente;
+use App\Models\PiCliente;
 use App\Models\User;
 
 class InicioMesFiscal extends Model
@@ -15,7 +15,7 @@ class InicioMesFiscal extends Model
     protected $table = 'inicio_mes_fiscal';
     protected $fillable = [
         'empresa_id',
-        'cliente_id',
+        'pi_cliente_id',
         'user_id',
         'cargo_id',
         'configuracion_id',
@@ -99,7 +99,7 @@ class InicioMesFiscal extends Model
     }
 
     public function cliente(){
-        return $this->belongsTo(Cliente::class,'cliente_id','id');
+        return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
     public function user(){

@@ -18,44 +18,47 @@ class PlanCuentaAuxiliarController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('plan_cuentas.auxiliar.index',Auth::user()->empresa_id);
         }
         return view('plan_cuentas_auxiliares.indexAfter', compact('empresas'));
     }
 
-    public function index($empresa_id)
+    public function index()
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $tipos = PlanCuentaAuxiliar::TIPOS;
         $estados = PlanCuentaAuxiliar::ESTADOS;
         $plan_cuentas_auxiliares = PlanCuentaAuxiliar::query()
-                                        ->byEmpresa($empresa_id)
+                                        ->byPiCliente(Auth::user()->pi_cliente_id)
                                         ->orderBy('id','desc')
                                         ->paginate(10);
-        return view('plan_cuentas_auxiliares.index', compact('icono','header','empresa','tipos','estados','plan_cuentas_auxiliares'));
+        return view('plan_cuentas_auxiliares.index', compact('icono','header','empresas','tipos','estados','plan_cuentas_auxiliares'));
     }
 
     public function search(Request $request)
     {
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($request->empresa_id);
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
         $tipos = PlanCuentaAuxiliar::TIPOS;
         $estados = PlanCuentaAuxiliar::ESTADOS;
         $plan_cuentas_auxiliares = PlanCuentaAuxiliar::query()
+                                        ->byPiCliente(Auth::user()->pi_cliente_id)
                                         ->byEmpresa($request->empresa_id)
                                         ->byNombre($request->nombre)
                                         ->byTipo($request->tipo)
                                         ->byEstado($request->estado)
                                         ->orderBy('id','desc')
                                         ->paginate(10);
-        return view('plan_cuentas_auxiliares.index', compact('icono','header','empresa','tipos','estados','plan_cuentas_auxiliares'));
+        return view('plan_cuentas_auxiliares.index', compact('icono','header','empresas','tipos','estados','plan_cuentas_auxiliares'));
     }
 
     public function create($id)
@@ -76,7 +79,7 @@ class PlanCuentaAuxiliarController extends Controller
             $user = User::where('id',Auth::user()->id)->first();
             $datos = [
                 'empresa_id' => $request->empresa_id,
-                'cliente_id' => $empresa->cliente_id,
+                'pi_cliente_id' => $empresa->pi_cliente_id,
                 'user_id' => $user->id,
                 'nombre' => $request->nombre,
                 'tipo' => '2',

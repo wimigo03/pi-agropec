@@ -32,29 +32,27 @@ class BalanceAperturaController extends Controller
 
     public function indexAfter()
     {
-        $empresas = Empresa::query()
-                            ->byCliente()
-                            ->pluck('nombre_comercial','id');
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
         if(count($empresas) == 1 && Auth::user()->id != 1){
             return redirect()->route('balance.apertura.index',Auth::user()->empresa_id);
         }
         return view('balance_apertura.indexAfter', compact('empresas'));
     }
 
-    public function index($empresa_id)
+    public function index()
     {
-        $inicioMesFiscal = InicioMesFiscal::where('empresa_id',$empresa_id)->first();
+        /*$inicioMesFiscal = InicioMesFiscal::where('empresa_id',$empresa_id)->first();
         if($inicioMesFiscal == null){
             return redirect()->back()->with('error_message','[ERROR EN OPERACION. FALTA LA CONFIGURACION DE INICIO MES FISCAL]')->withInput();
-        }
+        }*/
         $icono = self::ICONO;
         $header = self::INDEX;
-        $empresa = Empresa::find($empresa_id);
+        //$empresa = Empresa::find($empresa_id);
         $balances = BalanceApertura::query()
-                                    ->byEmpresa($empresa_id)
+                                    ->byPiCliente(Auth::user()->pi_cliente_id)
                                     ->orderBy('id','desc')
                                     ->paginate(10);
-        return view('balance_apertura.index', compact('icono','header','empresa','balances'));
+        return view('balance_apertura.index', compact('icono','header','balances'));
     }
 
     public function search(Request $request)
@@ -81,25 +79,27 @@ class BalanceAperturaController extends Controller
         return view('precio_productos.index', compact('tipo_cambio','icono','header','estados','tipo_precios','tipo_movimientos','empresa','precio_productos'));
     }
 
-    public function create($empresa_id)
+    public function create()
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $empresa = Empresa::find($empresa_id);
-        $inicioMesFiscal = InicioMesFiscal::select('inicio_gestion')->where('empresa_id',$empresa_id)->where('estado','1')->first();
+        /*$inicioMesFiscal = InicioMesFiscal::select('inicio_gestion')->where('empresa_id',$empresa_id)->where('estado','1')->first();
         if($inicioMesFiscal == null){
             return redirect()->back()->with('info_message', '[FALTA CONFIGURACION DE INICIO DE GESTION]')->withInput();
-        }
-        $anho = $inicioMesFiscal->inicio_gestion;
+        }*/
+        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
+        //$anho = $inicioMesFiscal->inicio_gestion;
+        $anho = date('Y') - 5;
         for($i = $anho; $i <= $anho + 10; $i++){
             $anhos[$i] = $i;
         }
-        return view('balance_apertura.create', compact('icono','header','empresa','anhos'));
+        return view('balance_apertura.create', compact('icono','header','empresas','anhos'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'empresa_id' => 'required',
             'anho' => 'required'
         ]);
 
@@ -139,7 +139,7 @@ class BalanceAperturaController extends Controller
         $date =  '01/' . $inicioMesFiscal->mes . '/' . $request->anho;
         $datos_comprobante = [
             'empresa_id' => $empresa->id,
-            'cliente_id' => $empresa->cliente_id,
+            'pi_cliente_id' => $empresa->pi_cliente_id,
             'tipo_cambio_id' => $tipo_cambio->id,
             'user_id' => $user->id,
             'cargo_id' => $user->cargo_id,
@@ -160,7 +160,7 @@ class BalanceAperturaController extends Controller
 
         $datos_balance_apertura = [
             'empresa_id' => $empresa->id,
-            'cliente_id' => $empresa->cliente_id,
+            'pi_cliente_id' => $empresa->pi_cliente_id,
             'user_id' => $user->id,
             'cargo_id' => $user->cargo_id,
             'comprobante_id' => $comprobante->id,

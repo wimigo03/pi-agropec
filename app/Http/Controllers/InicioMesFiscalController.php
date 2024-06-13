@@ -54,7 +54,7 @@ class InicioMesFiscalController extends Controller
                 $user = User::where('id',Auth::user()->id)->first();
                 $datos = [
                     'empresa_id' => $empresa->id,
-                    'cliente_id' => $empresa->cliente_id,
+                    'pi_cliente_id' => $empresa->pi_cliente_id,
                     'user_id' => $user->id,
                     'cargo_id' => $user->cargo_id,
                     'configuracion_id' => $request->configuracion_id,

@@ -28,21 +28,21 @@
         <br>
         <table class="font-verdana-9">
             <tr>
-                <td><b>CUENTA:</b>&nbsp;</td>
+                <td><b>Cuenta:</b>&nbsp;</td>
                 <td colspan="5">{{ $plan_cuenta->codigo . ' ' . $plan_cuenta->nombre }}</td>
             </tr>
             <tr>
-                <td><b>DESDE:</b>&nbsp;</td>
-                <td>{{ $fecha_i }}</td>
-                <td><b>SALDO INICIAL:</b>&nbsp;</td>
+                <td><b>Desde:</b>&nbsp;</td>
+                <td>{{ \Carbon\Carbon::parse($fecha_i)->format('d-m-Y') }}</td>
+                <td><b>Saldo inicial:</b>&nbsp;</td>
                 <td>BS. {{ number_format($saldo,2,'.',',') }}</td>
                 <td><b>Total Debe:</b>&nbsp;</td>
                 <td>BS. {{ number_format($total_debe,2,'.',',') }}</td>
             </tr>
             <tr>
-                <td><b>HASTA:</b>&nbsp;</td>
-                <td>{{ $fecha_f }}</td>
-                <td><b>SALDO FINAL:</b>&nbsp;</td>
+                <td><b>Hasta:</b>&nbsp;</td>
+                <td>{{ \Carbon\Carbon::parse($fecha_f)->format('d-m-Y') }}</td>
+                <td><b>Saldo final:</b>&nbsp;</td>
                 <td>BS. {{ number_format($saldo_final,2,'.',',') }}</td>
                 <td><b>Total Haber:</b>&nbsp;</td>
                 <td>BS. {{ number_format($total_haber,2,'.',',') }}</td>
@@ -55,6 +55,7 @@
                     <th>FECHA</th>
                     <th>COMPROBANTE</th>
                     <th>CENTRO</th>
+                    <th>SUBCENTRO</th>
                     <th>AUXILIAR</th>
                     <th>CHEQUE</th>
                     <th>GLOSA</th>
@@ -68,6 +69,7 @@
                     <td class="align-center">{{ $datos->fecha }}</td>
                     <td class="align-center">{{ $datos->nro_comprobante }}&nbsp;<b>{{ $datos->estado_abreviado}}</b></td>
                     <td class="align-center">{{ $datos->centro }}</td>
+                    <td class="align-center">{{ $datos->subcentro }}</td>
                     <td class="align-center">{{ $datos->auxiliar }}</td>
                     <td class="align-center">{{ $datos->nro_cheque }}</td>
                     <td>{{ $datos->glosa }}</td>

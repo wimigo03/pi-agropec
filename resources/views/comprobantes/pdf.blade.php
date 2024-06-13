@@ -30,7 +30,7 @@
                         </tr>
                         <tr>
                             <td style="padding: 3px;"><b>Fecha.-</b></td>
-                            <td style="padding: 3px;">{{ date('d/m/Y', strtotime($comprobante->fecha)) }}</td>
+                            <td style="padding: 3px;">{{ date('d-m-Y', strtotime($comprobante->fecha)) }}</td>
                         </tr>
                         <tr>
                             <td style="padding: 3px;"><b>Taza Cambio.-</b></td>
@@ -98,7 +98,8 @@
                     <th>N</th>
                     <th>CODIGO</th>
                     <th>DESCRIPCION / GLOSA</th>
-                    <th>PROY</th>
+                    <th>CENTRO</th>
+                    <th>SUBCENTRO</th>
                     <th>DEBE(BS.)</th>
                     <th>HABER(BS.)</th>
                     <th>DEBE($U$)</th>
@@ -124,12 +125,13 @@
                             <u>
                                 {{ $datos->plan_cuenta->nombre }}
                                 @if ($datos->plan_cuenta_auxiliar_id != null)
-                                    {{ $datos->plan_cuenta_auxiliar->nombre }}
+                                    - {{ $datos->plan_cuenta_auxiliar->nombre }}
                                 @endif
                             </u><br>
                             {{ $datos->glosa }}
                         </td>
                         <td class="align-center align-superior">{{ $datos->centro->abreviatura }}</td>
+                        <td class="align-center align-superior">{{ $datos->subcentro->abreviatura }}</td>
                         <td class="align-right align-superior">{{ number_format($datos->debe,2,'.',',') }}</td>
                         <td class="align-right align-superior">{{ number_format($datos->haber,2,'.',',') }}</td>
                         <td class="align-right align-superior">{{ number_format($datos->debe * $comprobante->tipo_cambio,2,'.',',') }}</td>
@@ -137,7 +139,7 @@
                     </tr>
             @endforeach
             <tr class="font-verdana-9">
-                <td class="align-superior" colspan="4"><b>TOTALES</b></td>
+                <td class="align-superior" colspan="5"><b>TOTALES</b></td>
                 <td class="align-right align-superior"><b>{{ number_format($total_debe,2,'.',',') }}</b></td>
                 <td class="align-right align-superior"><b>{{ number_format($total_haber,2,'.',',') }}</b></td>
                 <td class="align-right align-superior"><b>{{ number_format($total_debe * $comprobante->tipo_cambio,2,'.',',') }}</b></td>
