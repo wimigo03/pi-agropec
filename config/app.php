@@ -175,6 +175,9 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Yajra\DataTables\ButtonsServiceProvider::class,
+        Yajra\DataTables\EditorServiceProvider::class,
+        Yajra\DataTables\FractalServiceProvider::class,
     ])->toArray(),
 
     /*
