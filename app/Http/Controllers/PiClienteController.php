@@ -8,12 +8,17 @@ use App\Models\PiCliente;
 
 class PiClienteController extends Controller
 {
+    const ICONO = 'fas fa-address-card fa-fw fa-beat';
+    const INDEX = 'CLIENTES';
+
     public function index()
     {
+        $icono = self::ICONO;
+        $header = self::INDEX;
         $paises = Paises::where('estado','1')->pluck('nombre','id');
         $estados = PiCliente::ESTADOS;
         $clientes = PiCliente::orderBy('id','desc')->paginate(10);
-        return view('clientes.index', compact('paises','estados','clientes'));
+        return view('clientes.index', compact('icono','header','paises','estados','clientes'));
     }
 
     public function search(Request $request)

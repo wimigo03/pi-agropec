@@ -61,12 +61,14 @@ class PlanCuentaAuxiliarController extends Controller
         return view('plan_cuentas_auxiliares.index', compact('icono','header','empresas','tipos','estados','plan_cuentas_auxiliares'));
     }
 
-    public function create($id)
+    public function create()
     {
         $icono = self::ICONO;
         $header = self::CREATE;
-        $empresa = Empresa::find($id);
-        return view('plan_cuentas_auxiliares.create', compact('icono','header','empresa'));
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
+        return view('plan_cuentas_auxiliares.create', compact('icono','header','empresas'));
     }
 
     public function store(Request $request)

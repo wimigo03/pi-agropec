@@ -1,6 +1,7 @@
 <div class="row">
     <div class="col-md-7 px-1 pr-1 font-roboto-15" style="display: flex; align-items: flex-end;">
         <b>
+            <i class="{{ $icono }} fa-beat"></i>
             {{ $header }}
             @if (isset($empresa))
                 - {{ $empresa->nombre_comercial }}

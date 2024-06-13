@@ -545,7 +545,7 @@ class ComprobanteController extends Controller
     }
 
     public function update(Request $request)
-    {dd($request->all());
+    {
         try{
             $cont = 0;
             $comprobante = Comprobante::find($request->comprobante_id);
