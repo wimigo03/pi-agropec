@@ -161,13 +161,16 @@
                         name: 'c.username',
                         class: 'text-center p-1 font-roboto-11'
                     },
-                    {
-                        data: 'copia',
-                        name: 'copia',
-                        class: 'text-center p-1 font-roboto-11',
-                        orderable: false,
-                        searchable: false
-                    },
+                    @can('comprobantef.index')
+                        {
+                            data: 'copia',
+                            name: 'copia',
+                            class: 'text-center p-1 font-roboto-11',
+                            orderable: false,
+                            searchable: false
+                        },
+                    @endcan
+                    @canany(['comprobante.editar'])
                     {
                         data: 'bars',
                         name: 'bars',
@@ -175,6 +178,7 @@
                         orderable: false,
                         searchable: false
                     },
+                    @endcanany
                 ],
                 initComplete: function () {
                     var api = this.api();

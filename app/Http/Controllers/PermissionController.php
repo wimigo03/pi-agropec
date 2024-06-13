@@ -33,11 +33,12 @@ class PermissionController extends Controller
     public function indexAfter()
     {
         //***$this->completar_datos_permissions();
-        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
-        if(count($empresas) == 1 && Auth::user()->id != 1){
-            return redirect()->route('permissions.index',Auth::user()->empresa_id);
-        }
-        return view('permissions.indexAfter', compact('empresas'));
+        $icono = self::ICONO;
+        $header = self::INDEX;
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
+        return view('permissions.indexAfter', compact('icono','header','empresas'));
     }
 
     public function index($empresa_id)

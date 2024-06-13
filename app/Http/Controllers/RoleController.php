@@ -40,11 +40,12 @@ class RoleController extends Controller
     public function indexAfter()
     {
         /////***/$this->completar_datos_roles();
-        $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
-        if(count($empresas) == 1 && Auth::user()->id != 1){
-            return redirect()->route('role.index.index',Auth::user()->empresa_id);
-        }
-        return view('roles.indexAfter', compact('empresas'));
+        $icono = self::ICONO;
+        $header = self::INDEX;
+        $empresas = Empresa::query()
+                                ->byPiCliente(Auth::user()->pi_cliente_id)
+                                ->pluck('nombre_comercial','id');
+        return view('roles.indexAfter', compact('icono','header','empresas'));
     }
 
     public function index($empresa_id)
