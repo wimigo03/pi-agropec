@@ -22,16 +22,25 @@ use Auth;
 
 class EmpresaController extends Controller
 {
+    const ICONO = 'fas fa-user-friends fa-fw';
+    const INDEX = 'EMPRESAS';
+    const CREATE = 'REGISTRAR EMPRESA';
+    const EDITAR = 'MODIFICAR EMPRESA';
+
     public function index($pi_cliente_id)
     {
+        $icono = self::ICONO;
+        $header = self::INDEX;
         $empresas = Empresa::where('pi_cliente_id',$pi_cliente_id)->paginate(10);
         $cliente = PiCliente::find($pi_cliente_id);
         $estados = Empresa::ESTADOS;
-        return view('empresas.index', compact('empresas','cliente','estados'));
+        return view('empresas.index', compact('icono','header','empresas','cliente','estados'));
     }
 
     public function search(Request $request)
     {
+        $icono = self::ICONO;
+        $header = self::INDEX;
         $empresas = Empresa::query()
                             ->byPiCliente($request->pi_cliente_id)
                             ->byCodigo($request->codigo)
@@ -40,14 +49,16 @@ class EmpresaController extends Controller
                             ->paginate(10);
         $cliente = PiCliente::find($request->pi_cliente_id);
         $estados = Empresa::ESTADOS;
-        return view('empresas.index', compact('empresas','cliente','estados'));
+        return view('empresas.index', compact('icono','header','empresas','cliente','estados'));
     }
 
     public function create($pi_cliente_id)
     {
+        $icono = self::ICONO;
+        $header = self::CREATE;
         $cliente = PiCliente::find($pi_cliente_id);
         $modulos = Modulo::where('estado','1')->pluck('nombre','id');
-        return view('empresas.create', compact('cliente','modulos'));
+        return view('empresas.create', compact('icono','header','cliente','modulos'));
     }
 
     public function store(Request $request)
@@ -260,11 +271,13 @@ class EmpresaController extends Controller
 
     public function editar($empresa_id)
     {
+        $icono = self::ICONO;
+        $header = self::EDITAR;
         $empresa_cliente = Empresa::find($empresa_id);
         $cliente = PiCliente::find($empresa_cliente->pi_cliente_id);
         $modulos = Modulo::where('estado','1')->pluck('nombre','id');
         $modulos_empresas = EmpresaModulo::where('empresa_id',$empresa_id)->get();
-        return view('empresas.editar', compact('empresa_cliente','cliente','modulos','modulos_empresas'));
+        return view('empresas.editar', compact('icono','header','empresa_cliente','cliente','modulos','modulos_empresas'));
     }
 
     public function update(Request $request)

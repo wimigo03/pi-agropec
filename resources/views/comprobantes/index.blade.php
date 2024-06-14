@@ -114,21 +114,6 @@
                         class: 'text-center p-1 font-roboto-11'
                     },
                     {
-                        data: 'creado',
-                        name: 'creado',
-                        class: 'text-center p-1 font-roboto-11',
-                        render: function(data, type, row) {
-                            if (type === 'display' || type === 'filter') {
-                                var dateParts = data.split("-");
-                                var year = dateParts[0].slice(-2);
-                                var month = dateParts[1];
-                                var day = dateParts[2];
-                                return day + '-' + month + '-' + year;
-                            }
-                            return data;
-                        }
-                    },
-                    {
                         data: 'concepto',
                         name: 'a.concepto',
                         class: 'text-justify p-1 font-roboto-11'
@@ -136,7 +121,7 @@
                     {
                         data: 'monto',
                         name: 'a.monto',
-                        class: 'text-justify p-1 font-roboto-11'
+                        class: 'text-right p-1 font-roboto-11'
                     },
                     {
                         data: 'status',
@@ -160,6 +145,21 @@
                         data: 'username',
                         name: 'c.username',
                         class: 'text-center p-1 font-roboto-11'
+                    },
+                    {
+                        data: 'creado',
+                        name: 'creado',
+                        class: 'text-center p-1 font-roboto-11',
+                        render: function(data, type, row) {
+                            if (type === 'display' || type === 'filter') {
+                                var dateParts = data.split("-");
+                                var year = dateParts[0].slice(-2);
+                                var month = dateParts[1];
+                                var day = dateParts[2];
+                                return day + '-' + month + '-' + year;
+                            }
+                            return data;
+                        }
                     },
                     @can('comprobantef.index')
                         {
@@ -185,7 +185,7 @@
                     var columnCount = api.columns().nodes().length;
 
                     api.columns().every(function (index) {
-                        if (index >= columnCount - 2) {
+                        if (index >= columnCount - 1) {
                             return;
                         }
                         var column = this;

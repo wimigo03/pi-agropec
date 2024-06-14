@@ -1,5 +1,5 @@
 <form action="#" method="get" id="form">
-    <input type="hidden" name="empresa_id" value="{{ $empresa->id }}">
+    <input type="hidden" name="empresa_id" id="empresa_id" value="{{ $empresa->id }}">
     <div class="form-group row">
         <div class="col-md-4 px-0 pr-1 font-roboto-12">
             <select name="modulo_id" id="modulo_id" class="form-control select2">

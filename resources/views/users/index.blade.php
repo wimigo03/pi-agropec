@@ -9,6 +9,12 @@
     @include('layouts.notificaciones')
     <script>
         $(document).ready(function() {
+            $('#empresa_id').select2({
+                theme: "bootstrap4",
+                placeholder: "--Empresa--",
+                width: '100%'
+            });
+
             $('#cargo_id').select2({
                 theme: "bootstrap4",
                 placeholder: "--Cargo--",
@@ -36,19 +42,14 @@
         });
 
         function search(){
-            var id = $("#empresa_id").val();
-            var url = "{{ route('users.search',':id') }}";
+            var url = "{{ route('users.search') }}";
             $("#form").attr('action', url);
-            url = url.replace(':id',id);
-            window.location.href = url;
             $("#form").submit();
         }
 
         function limpiar(){
             localStorage.clear();
-            var id = $("#empresa_id").val();
-            var url = "{{ route('users.index',':id') }}";
-            url = url.replace(':id',id);
+            var url = "{{ route('users.index') }}";
             window.location.href = url;
         }
     </script>

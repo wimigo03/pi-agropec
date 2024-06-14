@@ -105,31 +105,40 @@ class User extends Authenticatable
         return $this->belongsTo(PiCliente::class,'pi_cliente_id','id');
     }
 
+    public function scopeByPiCliente($query, $pi_cliente_id){
+        if($pi_cliente_id){
+            return $query->where('pi_cliente_id', $pi_cliente_id);
+        }
+    }
+
     public function scopeByEmpresa($query, $empresa_id){
         if($empresa_id){
             return $query->where('empresa_id', $empresa_id);
         }
     }
 
-    public function scopeByCargo($query, $cargo_id){
-        if($cargo_id){
-            return $query->where('cargo_id', $cargo_id);
+    public function scopeByCargo($query, $cargo){
+        if ($cargo) {
+                return $query
+                    ->whereIn('cargo_id', function ($subquery) use($cargo) {
+                        $subquery->select('id')
+                            ->from('cargos')
+                            ->where('nombre',$cargo);
+                    });
         }
     }
 
-    /*public function scopeByRole($query, $role_id){
-        if($role_id){
-            return $query->where('role_id', $role_id);
-        }
-    }*/
-
-    public function scopeByRole($query, $role_id){
-        if ($role_id) {
+    public function scopeByRole($query, $role){
+        if ($role) {
                 return $query
-                    ->whereIn('id', function ($subquery) use($role_id) {
+                    ->whereIn('id', function ($subquery) use($role) {
                         $subquery->select('model_id')
                             ->from('model_has_roles')
-                            ->where('role_id',$role_id);
+                            ->whereIn('role_id', function ($subquery) use($role) {
+                                $subquery->select('id')
+                                    ->from('roles')
+                                    ->where('name',$role);
+                            });
                     });
         }
     }

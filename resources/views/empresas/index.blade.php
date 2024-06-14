@@ -1,14 +1,6 @@
 <!DOCTYPE html>
 @extends('layouts.dashboard')
 @section('content')
-    <div class="row">
-        <div class="col-md-12 font-roboto-17">
-            <span id="toggleSubMenu" style="cursor: pointer;">
-                <i class="fas fa-address-card fa-fw fa-beat"></i> <b>{{ $cliente->nombre }} - EMPRESAS</b>
-            </span>
-        </div>
-    </div>
-    <hr class="custom-hr">
     @include('empresas.partials.search')
     @include('empresas.partials.table')
 @endsection

@@ -1,23 +1,6 @@
 <!DOCTYPE html>
 @extends('layouts.dashboard')
 @section('content')
-    <div class="form-group row">
-        <div class="col-md-12">
-            <div class="card-header header">
-                <div class="row">
-                    <div class="col-md-10 font-roboto-17" style="display: flex; align-items: flex-end;">
-                        <span class="btn btn-sm btn-outline-dark font-roboto-12" id="toggleSubMenu" style="cursor: pointer;">
-                            <i class="fas fa-address-card fa-fw fa-beat"></i>
-                        </span>&nbsp;
-                        <b>{{ $cliente->nombre }} - MODIFICAR DATOS DE LA EMPRESA {{ $empresa_cliente->nombre_comercial}}</b>
-                    </div>
-                    <div class="col-md-2">
-                        &nbsp;
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
     @include('empresas.partials.form-editar')
     <div class="form-group row">
         <div class="col-md-12 text-right">

@@ -1,7 +1,7 @@
 <form action="#" method="post" id="form">
     @csrf
     <input type="hidden" name="permission_id" value="{{ $permission->id }}">
-    <input type="hidden" name="empresa_id" value="{{ $permission->empresa_id }}">
+    <input type="hidden" name="empresa_id" id="empresa_id" value="{{ $permission->empresa_id }}">
     <div class="form-group row abs-center font-roboto-12">
         <div class="col-md-4 px-0 pr-1">
             <label for="modulo" class="d-inline">Modulo</label>
@@ -45,3 +45,17 @@
         </div>
     </div>
 </form>
+<div class="form-group row abs-center font-roboto-12">
+    <div class="col-md-2 px-1 pr-1">
+        <span class="btn btn-block btn-outline-primary font-roboto-12" onclick="procesar();">
+            <i class="fas fa-paper-plane fa-fw"></i>&nbsp;Actualizar
+        </span>
+        <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
+    </div>
+    <div class="col-md-2 pr-1 pl-1">
+        <span class="btn btn-block btn-outline-danger font-roboto-12" onclick="cancelar();">
+            <i class="fas fa-times fa-fw"></i>&nbsp;Cancelar
+        </span>
+        <i class="fa fa-spinner custom-spinner fa-spin fa-lg fa-fw spinner-btn" style="display: none;"></i>
+    </div>
+</div>

@@ -16,7 +16,7 @@
                     @endcan
                     @can('users.index')
                         <li>
-                            <a href="{{ route('users.indexAfter') }}">
+                            <a href="{{ route('users.index') }}">
                                 &nbsp;&nbsp;<i class="fas fa-users fa-fw mr-2"></i>&nbsp;Usuarios
                             </a>
                         </li>
