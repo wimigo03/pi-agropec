@@ -66,7 +66,7 @@
                 <tbody>
                     @foreach ($modulos_empresas as $datos)
                         <tr class="font-roboto-11">
-                            <input type='hidden' class='modulo_id' value='{{ $datos->id }}'>
+                            <input type='hidden' class='modulo_id' value='{{ $datos->modulo->id }}'>
                             <td class="text-justify p-1">{{ $datos->modulo->nombre }}</td>
                             <td class="text-center p-1">{{ $datos->status }}</td>
                             <td class="text-center p-1">

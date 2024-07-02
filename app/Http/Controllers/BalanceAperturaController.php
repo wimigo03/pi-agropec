@@ -88,7 +88,7 @@ class BalanceAperturaController extends Controller
             return redirect()->back()->with('info_message', '[FALTA CONFIGURACION DE INICIO DE GESTION]')->withInput();
         }*/
         $empresas = Empresa::query()->byPiCliente(Auth::user()->pi_cliente_id)->pluck('nombre_comercial','id');
-        //$anho = $inicioMesFiscal->inicio_gestion;
+        //$anho = $inicioMesFiscal->pinicio_gestion;
         $anho = date('Y') - 5;
         for($i = $anho; $i <= $anho + 10; $i++){
             $anhos[$i] = $i;
